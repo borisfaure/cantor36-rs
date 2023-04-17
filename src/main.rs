@@ -22,15 +22,7 @@ use usb_device::bus::UsbBusAllocator;
 use usb_device::class::UsbClass as _;
 use usb_device::device::{UsbDeviceBuilder, UsbDeviceState, UsbVidPid};
 
-/// The IO Expander on the right side
-mod io_expander;
-/// Right side of the keyboard
-mod right;
-
-use io_expander::IoExpander;
-use right::Right;
-
-#[cfg(not(any(feature = "keymap_borisfaure",)))]
+#[cfg(not(any(feature = "keymap_borisfaure", feature = "keymap_basic",)))]
 compile_error!("Either feature \"keymap_basic\" or \"keymap_borisfaure\" must be enabled.");
 
 /// Basic layout for the keyboard
