@@ -37,11 +37,12 @@ mod keymap_borisfaure;
 #[cfg(feature = "keymap_borisfaure")]
 use keymap_borisfaure::{KBLayout, LAYERS};
 
-/// USB VID
-const VID: u16 = 0xc2ab;
+/// USB VID based on
+/// https://github.com/obdev/v-usb/blob/master/usbdrv/USB-IDs-for-free.txt
+const VID: u16 = 0x16c0;
 
 /// USB PID
-const PID: u16 = 0x0004;
+const PID: u16 = 0x27db;
 ///
 /// USB Product
 const PRODUCT: &str = "Cantor36 v0.1";
