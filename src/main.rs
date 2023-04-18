@@ -43,9 +43,11 @@ const VID: u16 = 0x16c0;
 
 /// USB PID
 const PID: u16 = 0x27db;
-///
+
 /// USB Product
-const PRODUCT: &str = "Cantor36 v0.1";
+const PRODUCT: &str = "Cantor36 keyboard";
+/// USB Manufacturer
+const MANUFACTURER: &str = "Boris Faure";
 
 /// USB Hid
 type UsbClass = keyberon::Class<'static, usb::UsbBusType, ()>;
@@ -106,7 +108,7 @@ mod app {
 
         let usb_class = keyberon::new_class(usb_bus, ());
         let usb_dev = UsbDeviceBuilder::new(usb_bus, UsbVidPid(VID, PID))
-            .manufacturer("Cuddly Keyboards Ltd.")
+            .manufacturer(MANUFACTURER)
             .product(PRODUCT)
             .serial_number(env!("CARGO_PKG_VERSION"))
             .build();
