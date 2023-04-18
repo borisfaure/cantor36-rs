@@ -8,9 +8,8 @@
 // Some panic handler needs to be included. This one halts the processor on panic.
 use panic_halt as _;
 
-use hal::gpio::{Input, Output, Pin, PullUp, PushPull};
+use hal::gpio::{Input, Output, Pin, PushPull};
 use hal::prelude::*;
-use hal::usb;
 use hal::{stm32, timers};
 use keyberon::debounce::Debouncer;
 use keyberon::key_code::KbHidReport;
@@ -71,14 +70,10 @@ mod app {
 
     #[local]
     struct Local {
-        /// Matrix of the left side
+        /// Matrix
         matrix: Matrix<Pin<Input<PullUp>>, Pin<Output<PushPull>>, 5, 4>,
-        /// Right side
-        right: Right,
-        /// Debouncer for the left side
-        debouncer_left: Debouncer<[[bool; 5]; 4]>,
-        /// Debouncer for the right side
-        debouncer_right: Debouncer<[[bool; 5]; 4]>,
+        /// Debouncer
+        debouncer: Debouncer<[[bool; 5]; 4]>,
         /// Timer when to scan the matrices
         timer: timers::Timer<stm32::TIM3>,
     }
@@ -154,9 +149,7 @@ mod app {
             },
             Local {
                 matrix,
-                right,
-                debouncer_left: Debouncer::new([[false; 5]; 4], [[false; 5]; 4], 5),
-                debouncer_right: Debouncer::new([[false; 5]; 4], [[false; 5]; 4], 5),
+                debouncer: Debouncer::new([[false; 5]; 4], [[false; 5]; 4], 5),
                 timer,
             },
             init::Monotonics(),
