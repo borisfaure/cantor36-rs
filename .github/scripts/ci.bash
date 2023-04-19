@@ -6,11 +6,11 @@ set -u
 
 declare -A KEYMAPS
 KEYMAPS=(
-    "keymap_borisfaure"
+    [0]="keymap_borisfaure"
 )
 declare -A EXAMPLES
 EXAMPLES=(
-    "blinky_led"
+    [0]="blinky_led"
 )
 
 
