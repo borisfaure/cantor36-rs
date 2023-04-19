@@ -8,6 +8,10 @@ declare -A KEYMAPS
 KEYMAPS=(
     "keymap_borisfaure"
 )
+declare -A EXAMPLES
+EXAMPLES=(
+    "blinky_led"
+)
 
 
 run_doc() {
@@ -22,18 +26,26 @@ run_fmt() {
 
 run_clippy() {
     rustup component add clippy-preview
+    for EXAMPLE in "${EXAMPLES[@]}"
+    do
+        cargo clippy --example "$EXAMPLE" -- -D warnings
+    done
     cargo clippy -- -D warnings
     for KEYMAP in "${KEYMAPS[@]}"
     do
-        cargo clippy --no-default-features --features "$FEAT,$KEYMAP" -- -D warnings
+        cargo clippy --no-default-features --features "$KEYMAP" -- -D warnings
     done
 }
 
 run_check() {
+    for EXAMPLE in "${EXAMPLES[@]}"
+    do
+        cargo check --example "$EXAMPLE"
+    done
     cargo check
     for KEYMAP in "${KEYMAPS[@]}"
     do
-        cargo check --no-default-features --features "$FEAT,$KEYMAP"
+        cargo check --no-default-features --features "$KEYMAP"
     done
 }
 
@@ -41,23 +53,31 @@ run_test() {
     cargo test
     for KEYMAP in "${KEYMAPS[@]}"
     do
-        cargo test --no-default-features --features "$FEAT,$KEYMAP"
+        cargo test --no-default-features --features "$KEYMAP"
     done
 }
 
 run_build() {
+    for EXAMPLE in "${EXAMPLES[@]}"
+    do
+        cargo build --example "$EXAMPLE"
+    done
     cargo build
     for KEYMAP in "${KEYMAPS[@]}"
     do
-        cargo build --no-default-features --features "$FEAT,$KEYMAP"
+        cargo build --no-default-features --features "$KEYMAP"
     done
 }
 
 run_build_release() {
+    for EXAMPLE in "${EXAMPLES[@]}"
+    do
+        cargo build --release --example "$EXAMPLE"
+    done
     cargo build --release
     for KEYMAP in "${KEYMAPS[@]}"
     do
-        cargo build --release --no-default-features --features "$FEAT,$KEYMAP"
+        cargo build --release --no-default-features --features "$KEYMAP"
     done
 }
 
