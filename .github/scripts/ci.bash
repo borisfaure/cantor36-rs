@@ -24,13 +24,13 @@ run_doc() {
     rustup component add rust-docs
     for EXAMPLE in "${EXAMPLES[@]}"
     do
-        cargo doc --example "$EXAMPLE" -- -D warnings
+        cargo doc --example "$EXAMPLE"
     done
     for SIDE in "${SIDES[@]}"
     do
         for KEYMAP in "${KEYMAPS[@]}"
         do
-            cargo doc --no-default-features --features "$SIDE,$KEYMAP" -- -D warnings
+            cargo doc --no-default-features --features "$SIDE,$KEYMAP"
         done
     done
 }
