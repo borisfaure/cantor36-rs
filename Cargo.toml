@@ -9,7 +9,8 @@ keymap_basic = []
 keymap_borisfaure = []
 right = []
 left = []
-default = ["left","keymap_borisfaure"]
+default = ["keymap_borisfaure"]
+#default = ["left","keymap_borisfaure"]
 
 [dependencies]
 cortex-m = "0.7"
