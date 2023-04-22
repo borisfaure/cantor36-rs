@@ -1,6 +1,4 @@
 use core::convert::Infallible;
-use keyberon::action::{d, k, l, m, Action, HoldTapAction, HoldTapConfig};
-use keyberon::key_code::KeyCode::*;
 use keyberon::layout::Layout;
 
 /// Keyboard Layout type to mask the number of layers
