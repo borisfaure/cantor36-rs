@@ -15,7 +15,7 @@ default = ["keymap_borisfaure"]
 [dependencies]
 cortex-m = "0.7"
 cortex-m-rt = { version = "0.7", features = ["device"] }
-stm32f4xx-hal = { version = "0.15", features = ["rtic", "stm32f401", "usb_fs"] }
+stm32f4xx-hal = { version = "0.16", features = ["rtic", "stm32f401", "usb_fs"] }
 panic-halt = "0.2"
 usb-device= "0.2"
 cortex-m-rtic = "1.0"
