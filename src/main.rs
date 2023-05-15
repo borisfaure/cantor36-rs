@@ -6,7 +6,9 @@
 //! Firmware for the [Cantor31 keyboard](https://github.com/borisfaure/cantor36)
 
 // Some panic handler needs to be included. This one halts the processor on panic.
-use panic_halt as _;
+//use panic_halt as _;
+use defmt as _;
+use panic_probe as _;
 
 use hal::gpio::{EPin, Input};
 use hal::otg_fs::{UsbBusType, USB};
@@ -96,6 +98,8 @@ mod app {
     fn init(cx: init::Context) -> (Shared, Local, init::Monotonics) {
         /// Static memory for USB
         static mut EP_MEMORY: [u32; 1024] = [0; 1024];
+
+        defmt::info!("init");
 
         // setup the monotonic timer
         let clocks = cx
@@ -220,6 +224,10 @@ mod app {
         {
             // either register events or send to other half
             if is_host {
+                match event {
+                    Event::Press(i, j) => defmt::info!("Registering press {} {}", i, j),
+                    Event::Release(i, j) => defmt::info!("Registering release {} {}", i, j),
+                }
                 cx.shared.layout.event(event)
             } else {
                 for &b in &serialize(event) {
