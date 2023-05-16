@@ -81,6 +81,7 @@ run_test() {
 }
 
 run_build() {
+    cargo install flip-link
     for EXAMPLE in "${EXAMPLES[@]}"
     do
         cargo build --example "$EXAMPLE"
@@ -95,6 +96,7 @@ run_build() {
 }
 
 run_build_release() {
+    cargo install flip-link
     for EXAMPLE in "${EXAMPLES[@]}"
     do
         cargo build --release --example "$EXAMPLE"
