@@ -7,7 +7,7 @@
 
 // Some panic handler needs to be included. This one halts the processor on panic.
 //use panic_halt as _;
-use defmt as _;
+use defmt_rtt as _;
 use panic_probe as _;
 
 use hal::gpio::{EPin, Input};
