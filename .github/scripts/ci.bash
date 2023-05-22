@@ -13,6 +13,7 @@ declare -A KEYMAPS
 KEYMAPS=(
     [0]="keymap_borisfaure"
     [1]="keymap_basic"
+    [2]="keymap_test"
 )
 declare -A EXAMPLES
 EXAMPLES=(

@@ -29,8 +29,14 @@ use usb_device::device::{UsbDeviceBuilder, UsbDeviceState, UsbVidPid};
 #[cfg(not(any(feature = "right", feature = "left",)))]
 compile_error!("Either feature \"right\" or \"left\" must be enabled.");
 
-#[cfg(not(any(feature = "keymap_borisfaure", feature = "keymap_basic",)))]
-compile_error!("Either feature \"keymap_basic\" or \"keymap_borisfaure\" must be enabled.");
+#[cfg(not(any(
+    feature = "keymap_borisfaure",
+    feature = "keymap_basic",
+    feature = "keymap_test"
+)))]
+compile_error!(
+    "Either feature \"keymap_basic\" or \"keymap_borisfaure\" or \"keymap_test\" must be enabled."
+);
 
 /// Basic layout for the keyboard
 #[cfg(feature = "keymap_basic")]
@@ -43,6 +49,12 @@ use keymap_basic::{KBLayout, LAYERS};
 mod keymap_borisfaure;
 #[cfg(feature = "keymap_borisfaure")]
 use keymap_borisfaure::{KBLayout, LAYERS};
+
+/// Test layout for the keyboard
+#[cfg(feature = "keymap_test")]
+mod keymap_test;
+#[cfg(feature = "keymap_test")]
+use keymap_test::{KBLayout, LAYERS};
 
 /// USB VID based on
 /// https://github.com/obdev/v-usb/blob/master/usbdrv/USB-IDs-for-free.txt
