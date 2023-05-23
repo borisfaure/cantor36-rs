@@ -15,7 +15,9 @@ const fn seq<T, K>(events: &'static &'static [SequenceEvent<K>]) -> Action<T, K>
     Action::Sequence(events)
 }
 
+/// write `qwe`
 const QQ: Action = seq(&[Tap(Q), Tap(W), Tap(E)].as_slice());
+/// write `aze`
 const AA: Action = seq(&[Tap(A), Tap(Z), Tap(E)].as_slice());
 
 #[rustfmt::skip]
