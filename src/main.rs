@@ -224,9 +224,9 @@ mod app {
         shared = [usb_dev, usb_class, layout]
     )]
     fn tick(mut cx: tick::Context) {
-        let is_host = cx.shared.usb_dev.lock(|d| d.state()) == UsbDeviceState::Configured;
-
         cx.local.timer.wait().ok();
+
+        let is_host = cx.shared.usb_dev.lock(|d| d.state()) == UsbDeviceState::Configured;
 
         for event in cx
             .local
