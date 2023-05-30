@@ -236,10 +236,6 @@ mod app {
         {
             // either register events or send to other half
             if is_host {
-                match event {
-                    Event::Press(i, j) => defmt::info!("Registering press {} {}", i, j),
-                    Event::Release(i, j) => defmt::info!("Registering release {} {}", i, j),
-                }
                 cx.shared.layout.event(event)
             } else {
                 for &b in &serialize(event) {
