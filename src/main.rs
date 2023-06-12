@@ -244,6 +244,8 @@ mod app {
             }
         }
 
+        cx.shared.layout.tick();
+
         // if this is the USB-side, send a USB keyboard report
         if is_host {
             let report: KbHidReport = cx.shared.layout.keycodes().collect();
