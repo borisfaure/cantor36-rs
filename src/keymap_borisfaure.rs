@@ -53,8 +53,8 @@ const HT_A_DOT: Action = ht!(k(LAlt), k(Dot));
 /// Layer 1 (lower) when held, or Tab
 const HT_1_TAB: Action = ht!(l(1), k(Tab));
 
-/// Layer 2 (raise) when held, or Enter
-const HT_2_ENT: Action = ht!(l(2), k(Enter));
+/// Layer 2 (raise) when held, or BackSpace
+const HT_2_BS: Action = ht!(l(2), k(BSpace));
 
 /// Layer 3 (numbers/Fx) when held, or B
 const HT_3_B: Action = ht!(l(3), k(B));
@@ -97,10 +97,10 @@ const BASE: Action = d(0);
 /// Layout
 pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::layout::layout! {
     { /* 0: BASE */
-[  Q         {HT_W_W}  E   R         {HT_5_T}    {HT_5_Y}   U          I  {HT_W_O}     P        ],
-[ {HT_C_A}    S        D  {HT_6_F}    G           H         J          K   L          {HT_C_SC} ],
-[ {HT_S_ESC} {HT_A_X}  C   V         {HT_3_B}    {HT_3_N}   M          ,  {HT_A_DOT}  {HT_S_SL} ],
-[  n          n        n  {HT_1_TAB}  Space       BSpace   {HT_2_ENT}  n   n           n        ],
+[  Q         {HT_W_W}  E   R         {HT_5_T}    {HT_5_Y}   U         I  {HT_W_O}     P        ],
+[ {HT_C_A}    S        D  {HT_6_F}    G           H         J         K   L          {HT_C_SC} ],
+[ {HT_S_ESC} {HT_A_X}  C   V         {HT_3_B}    {HT_3_N}   M         ,  {HT_A_DOT}  {HT_S_SL} ],
+[  n          n        n  {HT_1_TAB}  Space       Enter    {HT_2_BS}  n   n           n        ],
     } { /* 1: LOWER */
         [ !  #  $    '(' ')'    ^       &       {S_INS}  *      ~    ],
         [ =  -  '`'  '{' '}'    Left    PgDown  PgUp     Right  '\\' ],
@@ -110,17 +110,17 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::la
         [ {BASE}  n    E   E        E           Z       U      I   O      PScreen ],
         [ A       '_'  +   &        |           Left    Down   Up  Right  PgUp    ],
         [ E       O    C  {CAPS}   {NUM}        N       M      ,   .      PgDown  ],
-        [ n       n    n  Delete    RAlt        BSpace  Enter  n   n      n       ],
+        [ n       n    n  Delete    RAlt        Enter   BSpace n   n      n       ],
     } { /* 3: NUMBERS Fx */
         [ .  4  5   6          =         /       F1   F2   F3   F4  ],
         [ 0  1  2   3          -         *       F5   F6   F7   F8  ],
         [ ,  7  8   9          {NUM}     +       F9   F10  F11  F12 ],
-        [ n  n  n  {HT_1_TAB}  Space    BSpace  {HT_2_ENT}    n    n    n   ],
+        [ n  n  n  {HT_1_TAB}  Space    Enter   {HT_2_BS}    n    n    n   ],
     } { /* 4: NUMBERS Fx Lock */
         [ .  4  5   6          =         /       F1   F2   F3   F4  ],
         [ 0  1  2   3          -         *       F5   F6   F7   F8  ],
         [ ,  7  8   9          {UNNUM}   +       F9   F10  F11  F12 ],
-        [ n  n  n  {HT_1_TAB}  Space    BSpace  {HT_2_ENT}    n    n    n   ],
+        [ n  n  n  {HT_1_TAB}  Space    Enter   {HT_2_BS}    n    n    n   ],
     } { /* 5: MISC TODO: mouse */
         [ Pause  {GAME}             n               R              n      n  n  n  n  n ],
         [ n      VolUp              Mute            VolDown        n      n  n  n  n  n ],
@@ -130,16 +130,16 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::la
         [ Q  W  E  R    T      Y       U      I  O  P ],
         [ A  S  D  F    G      H       J      K  L  ; ],
         [ Z  X  C  V    B      N       M      ,  .  / ],
-        [ n  n  n  Tab  Space  BSpace  Enter  n  n  n ],
+        [ n  n  n  Tab  Space  Enter   BSpace n  n  n ],
     } { /* 7: Gaming */
         [ Q  W  E   R           T      Y       U          I  {HT_W_O}     P       ],
         [ A  S  D   F           G      H       J          K   L         {HT_C_SC} ],
         [ Z  X  C   V           B      N       M          ,  {HT_A_DOT} {HT_S_SL} ],
-        [ n  n  n  {HT_1_TAB}  Space  BSpace  {HT_2_ENT}  n   n          n        ],
+        [ n  n  n  {HT_1_TAB}  Space  BSpace  {HT_2_BS}  n   n          n        ],
     } { /* 8: Caps */
 [ {s!(Q)}   {s!(W)}  {s!(E)}  {s!(R)}  {s!(T)}         {s!(Y)}   {s!(U)}     {s!(I)}  {s!(O)}   {s!(P)}   ],
 [ {HT_C_SA} {s!(S)}  {s!(D)}  {s!(F)}  {s!(G)}         {s!(H)}   {s!(J)}     {s!(K)}  {s!(L)}   {HT_C_SC} ],
 [ {UNCAPS}  {s!(X)}  {s!(C)}  {s!(V)}  {s!(B)}         {s!(N)}   {s!(M)}      ,        .         /        ],
-[  n         n        n        '_'      Space           BSpace   {HT_2_ENT}   n        n         n        ],
+[  n         n        n        '_'      Space           Enter    {HT_2_BS}   n        n         n        ],
     }
 };
