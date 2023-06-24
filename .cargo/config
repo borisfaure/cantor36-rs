@@ -1,3 +1,6 @@
+[alias]
+f = "flash --chip STM32F401CDUx"
+
 [target.thumbv7em-none-eabihf]
 
 # uncomment ONE of these three option to make `cargo run` start a GDB session
