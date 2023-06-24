@@ -41,8 +41,8 @@ const HT_C_A: Action = ht!(k(LCtrl), k(A));
 const HT_C_SA: Action = ht!(k(LCtrl), s!(A));
 /// Right Control when held, or SemiColon
 const HT_C_SC: Action = ht!(k(RCtrl), k(SColon));
-/// Left Shift when held, or Escape
-const HT_S_ESC: Action = ht!(k(LShift), k(Escape));
+/// Left Shift when held, or Z
+const HT_S_Z: Action = ht!(k(LShift), k(Z));
 /// Right Shift when held, or Slash
 const HT_S_SL: Action = ht!(k(RShift), k(Slash));
 /// Left Alt when held, or X
@@ -97,10 +97,10 @@ const BASE: Action = d(0);
 /// Layout
 pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::layout::layout! {
     { /* 0: BASE */
-[  Q         {HT_W_W}  E   R         {HT_5_T}    {HT_5_Y}   U         I  {HT_W_O}     P        ],
-[ {HT_C_A}    S        D  {HT_6_F}    G           H         J         K   L          {HT_C_SC} ],
-[ {HT_S_ESC} {HT_A_X}  C   V         {HT_3_B}    {HT_3_N}   M         ,  {HT_A_DOT}  {HT_S_SL} ],
-[  n          n        n  {HT_1_TAB}  Space       Enter    {HT_2_BS}  n   n           n        ],
+[  Q         {HT_W_W}   E       R         {HT_5_T}    {HT_5_Y}   U         I  {HT_W_O}     P        ],
+[ {HT_C_A}    S         D      {HT_6_F}    G           H         J         K   L          {HT_C_SC} ],
+[ {HT_S_Z}   {HT_A_X}   C       V         {HT_3_B}    {HT_3_N}   M         ,  {HT_A_DOT}  {HT_S_SL} ],
+[  n          n        Escape  {HT_1_TAB}  Space       Enter    {HT_2_BS}  n   n           n        ],
     } { /* 1: LOWER */
         [ !  #  $    '(' ')'    ^       &       {S_INS}  *      ~    ],
         [ =  -  '`'  '{' '}'    Left    PgDown  PgUp     Right  '\\' ],
