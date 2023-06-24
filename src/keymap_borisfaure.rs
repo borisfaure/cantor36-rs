@@ -1,5 +1,9 @@
 use core::convert::Infallible;
-use keyberon::action::{d, k, l, m, Action, HoldTapAction, HoldTapConfig};
+use core::fmt::Debug;
+use keyberon::action::{
+    d, k, l, m, Action, HoldTapAction, HoldTapConfig,
+    SequenceEvent::{self, Press, Release, Tap},
+};
 use keyberon::key_code::KeyCode::*;
 use keyberon::layout::Layout;
 
@@ -79,7 +83,11 @@ const S_INS: Action = m(&[LShift, Insert].as_slice());
 
 /// A shortcut to create a `Action::MultipleActions`, useful to
 /// create compact layout.
-const fn ma<T, K>(actions: &'static &'static [Action<T, K>]) -> Action<T, K> {
+const fn ma<T, K>(actions: &'static &'static [Action<T, K>]) -> Action<T, K>
+where
+    T: Debug,
+    K: Debug,
+{
     Action::MultipleActions(actions)
 }
 
@@ -93,6 +101,42 @@ const GAME: Action = d(7);
 /// Change default layer to BASE
 const BASE: Action = d(0);
 
+/// A shortcut to create a `Action::Sequence`, useful to
+/// create compact layout.
+const fn seq<T, K>(events: &'static &'static [SequenceEvent<K>]) -> Action<T, K>
+where
+    T: 'static + Debug,
+    K: 'static + Debug,
+{
+    Action::Sequence(events)
+}
+
+/// à
+const A_GRV: Action = seq(&[Tap(RAlt), Tap(Grave), Tap(A)].as_slice());
+/// è
+const E_GRV: Action = seq(&[Tap(RAlt), Tap(Grave), Tap(E)].as_slice());
+/// ù
+const U_GRV: Action = seq(&[Tap(RAlt), Tap(Grave), Tap(U)].as_slice());
+/// é
+const E_ACU: Action = seq(&[Tap(RAlt), Tap(Quote), Tap(E)].as_slice());
+/// ê
+const E_CIR: Action =
+    seq(&[Tap(RAlt), Press(LShift), Tap(Kb6), Release(LShift), Tap(E)].as_slice());
+/// î
+const I_CIR: Action =
+    seq(&[Tap(RAlt), Press(LShift), Tap(Kb6), Release(LShift), Tap(I)].as_slice());
+/// ô
+const O_CIR: Action =
+    seq(&[Tap(RAlt), Press(LShift), Tap(Kb6), Release(LShift), Tap(O)].as_slice());
+/// ç
+const C_CED: Action = seq(&[Tap(RAlt), Tap(Comma), Tap(C)].as_slice());
+/// œ
+const OE: Action = seq(&[Tap(RAlt), Tap(O), Tap(E)].as_slice());
+/// €
+const EURO: Action = seq(&[Tap(RAlt), Tap(Equal), Tap(E)].as_slice());
+/// …
+const DOTS: Action = seq(&[Tap(RAlt), Tap(Dot), Tap(Dot)].as_slice());
+
 #[rustfmt::skip]
 /// Layout
 pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::layout::layout! {
@@ -102,15 +146,15 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::la
 [ {HT_S_Z}   {HT_A_X}   C       V         {HT_3_B}    {HT_3_N}   M         ,  {HT_A_DOT}  {HT_S_SL} ],
 [  n          n        Escape  {HT_1_TAB}  Space       Enter    {HT_2_BS}  n   n           n        ],
     } { /* 1: LOWER */
-        [ !  #  $    '(' ')'    ^       &       {S_INS}  *      ~    ],
-        [ =  -  '`'  '{' '}'    Left    PgDown  PgUp     Right  '\\' ],
-        [ @  &  %    '[' ']'    n       n       Home     '\''   '"'  ],
-        [ n  n  n     n  RAlt   Escape  Delete  n        n      n    ],
-    } { /* 2: RAISE TODO: sequences */
-        [ {BASE}  n    E   E        E           Z       U      I   O      PScreen ],
-        [ A       '_'  +   &        |           Left    Down   Up  Right  PgUp    ],
-        [ E       O    C  {CAPS}   {NUM}        N       M      ,   .      PgDown  ],
-        [ n       n    n  Delete    RAlt        Enter   BSpace n   n      n       ],
+        [ !  #  $    '(' ')'    ^       &       {S_INS}  *      ~   ],
+        [ =  -  '`'  '{' '}'    Left    PgDown   PgUp   Right  '\\' ],
+        [ @  &  %    '[' ']'    n       n         n     '\''   '"'  ],
+        [ n  n  n     n   n     Escape  Delete    n      n      n   ],
+    } { /* 2: RAISE */
+        [ {BASE}   n    {E_ACU}  {E_CIR}  {E_GRV}      Home   {U_GRV}  {I_CIR}  {O_CIR}  PScreen ],
+        [ {A_GRV} '_'    +        &        |           Left    Down     Up       Right   PgUp    ],
+        [ {EURO}  {OE}  {C_CED}  {CAPS}   {NUM}        End     Menu     n       {DOTS}   PgDown  ],
+        [ n        n     n        n        n           Enter   BSpace   n        n       n       ],
     } { /* 3: NUMBERS Fx */
         [ .  4  5   6          =         /       F1   F2   F3   F4  ],
         [ 0  1  2   3          -         *       F5   F6   F7   F8  ],
@@ -135,11 +179,11 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::la
         [ Q  W  E   R           T      Y       U          I  {HT_W_O}     P       ],
         [ A  S  D   F           G      H       J          K   L         {HT_C_SC} ],
         [ Z  X  C   V           B      N       M          ,  {HT_A_DOT} {HT_S_SL} ],
-        [ n  n  n  {HT_1_TAB}  Space  BSpace  {HT_2_BS}  n   n          n        ],
+        [ n  n  n  {HT_1_TAB}  Space  Enter   {HT_2_BS}  n   n          n        ],
     } { /* 8: Caps */
-[ {s!(Q)}   {s!(W)}  {s!(E)}  {s!(R)}  {s!(T)}         {s!(Y)}   {s!(U)}     {s!(I)}  {s!(O)}   {s!(P)}   ],
-[ {HT_C_SA} {s!(S)}  {s!(D)}  {s!(F)}  {s!(G)}         {s!(H)}   {s!(J)}     {s!(K)}  {s!(L)}   {HT_C_SC} ],
-[ {UNCAPS}  {s!(X)}  {s!(C)}  {s!(V)}  {s!(B)}         {s!(N)}   {s!(M)}      ,        .         /        ],
-[  n         n        n        '_'      Space           Enter    {HT_2_BS}   n        n         n        ],
+[ {s!(Q)}   {s!(W)}  {s!(E)}   {s!(R)}  {s!(T)}         {s!(Y)}   {s!(U)}     {s!(I)}  {s!(O)}   {s!(P)}   ],
+[ {HT_C_SA} {s!(S)}  {s!(D)}   {s!(F)}  {s!(G)}         {s!(H)}   {s!(J)}     {s!(K)}  {s!(L)}   {HT_C_SC} ],
+[ {s!(Z)}   {s!(X)}  {s!(C)}   {s!(V)}  {s!(B)}         {s!(N)}   {s!(M)}      ,        .         /        ],
+[  n         n       {UNCAPS}   '_'      Space           Enter    {HT_2_BS}   n        n         n        ],
     }
 };
