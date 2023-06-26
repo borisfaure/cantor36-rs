@@ -137,6 +137,55 @@ const EURO: Action = seq(&[Tap(RAlt), Tap(Equal), Tap(E)].as_slice());
 /// …
 const DOTS: Action = seq(&[Tap(RAlt), Tap(Dot), Tap(Dot)].as_slice());
 
+/// Tmux: new window
+const T_NEW: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(C)].as_slice());
+/// Tmux: previous window
+const T_PRV: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(P)].as_slice());
+/// Tmux: next window
+const T_NXT: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(N)].as_slice());
+/// Tmux: last window
+const T_LST: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(L)].as_slice());
+/// Tmux: command
+const T_CMD: Action = seq(&[
+    Press(LCtrl),
+    Tap(A),
+    Release(LCtrl),
+    Press(LShift),
+    Tap(SColon),
+    Release(LShift),
+]
+.as_slice());
+/// Tmux: copy
+const T_CPY: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(LBracket)].as_slice());
+/// Tmux: paste
+const T_PST: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(RBracket)].as_slice());
+/// Tmux: scroll
+const T_SCR: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(PgUp)].as_slice());
+/// Tmux: move
+const T_MOV: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Dot)].as_slice());
+/// Tmux: rename
+const T_RNM: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Comma)].as_slice());
+/// Tmux: go to window 1
+const T_1: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb1)].as_slice());
+/// Tmux: go to window 2
+const T_2: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb2)].as_slice());
+/// Tmux: go to window 3
+const T_3: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb3)].as_slice());
+/// Tmux: go to window 4
+const T_4: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb4)].as_slice());
+/// Tmux: go to window 5
+const T_5: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb5)].as_slice());
+/// Tmux: go to window 6
+const T_6: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb6)].as_slice());
+/// Tmux: go to window 7
+const T_7: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb7)].as_slice());
+/// Tmux: go to window 8
+const T_8: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb8)].as_slice());
+/// Tmux: go to window 9
+const T_9: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb9)].as_slice());
+/// Tmux: go to window 0
+const T_0: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb0)].as_slice());
+
 #[rustfmt::skip]
 /// Layout
 pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::layout::layout! {
@@ -171,10 +220,10 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::la
         [ n      MediaPreviousSong  MediaPlayPause  MediaNextSong  n      n  n  n  n  n ],
         [ n      n                  n               n              n      n  n  n  n  n ],
     } { /* 6: TMUX TODO: sequences */
-        [ Q  W  E  R    T      Y       U      I  O  P ],
-        [ A  S  D  F    G      H       J      K  L  ; ],
-        [ Z  X  C  V    B      N       M      ,  .  / ],
-        [ n  n  n  Tab  Space  Enter   BSpace n  n  n ],
+        [ {T_6}   {T_7} {T_8}   {T_9}   {T_0}      {T_1}   {T_2} {T_3}   {T_4}   {T_5}   ],
+        [ {T_LST}  n     n       n       n         {T_PRV}  n    {T_SCR} {T_NXT} {T_CMD} ],
+        [  n       n    {T_NEW} {T_CPY} {T_PST}     n       n    {T_RNM} {T_MOV} {T_PST} ],
+        [  n       n     n       n       n          n       n     n       n       n      ],
     } { /* 7: Gaming */
         [ Q  W  E   R           T      Y       U          I  {HT_W_O}     P       ],
         [ A  S  D   F           G      H       J          K   L         {HT_C_SC} ],
