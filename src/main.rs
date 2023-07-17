@@ -57,7 +57,7 @@ mod keymap_test;
 use keymap_test::{KBLayout, LAYERS};
 
 /// USB VID based on
-/// https://github.com/obdev/v-usb/blob/master/usbdrv/USB-IDs-for-free.txt
+/// <https://github.com/obdev/v-usb/blob/master/usbdrv/USB-IDs-for-free.txt>
 const VID: u16 = 0x16c0;
 
 /// USB PID
