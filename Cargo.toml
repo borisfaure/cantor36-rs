@@ -10,7 +10,7 @@ keymap_borisfaure = []
 keymap_test = []
 right = []
 left = []
-default = ["keymap_borisfaure"]
+default = ["left", "keymap_borisfaure"]
 #default = ["left","keymap_borisfaure"]
 
 [dependencies]
