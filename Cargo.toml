@@ -24,8 +24,9 @@ defmt-rtt = "0.4"
 panic-probe = { version = "0.3", features = ["print-defmt"] }
 usb-device= "0.2"
 systick-monotonic = "1.0"
-keyberon = { git = "https://github.com/borisfaure/keyberon", branch = "sequences" }
-#keyberon = { path = "../keyberon" }
+keyberon = { git = "https://github.com/borisfaure/keyberon", branch = "shifted_seq" }
+#keyberon = { path = "../keyberon", features = ["defmt"] }
+#keyberon = { path = "../keyberon"}
 embedded-hal = "0.2"
 nb = "1.0"
 

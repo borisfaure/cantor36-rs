@@ -2,7 +2,7 @@ use core::convert::Infallible;
 use core::fmt::Debug;
 use keyberon::action::{
     d, k, l, m, Action, HoldTapAction, HoldTapConfig,
-    SequenceEvent::{self, Press, Release, Tap},
+    SequenceEvent::{self, Filter, Press, Release, Restore, Tap},
 };
 use keyberon::key_code::KeyCode::*;
 use keyberon::layout::Layout;
@@ -111,31 +111,113 @@ where
     Action::Sequence(events)
 }
 
-/// à
-const A_GRV: Action = seq(&[Tap(RAlt), Tap(Grave), Tap(A)].as_slice());
-/// è
-const E_GRV: Action = seq(&[Tap(RAlt), Tap(Grave), Tap(E)].as_slice());
-/// ù
-const U_GRV: Action = seq(&[Tap(RAlt), Tap(Grave), Tap(U)].as_slice());
-/// é
-const E_ACU: Action = seq(&[Tap(RAlt), Tap(Quote), Tap(E)].as_slice());
-/// ê
-const E_CIR: Action =
-    seq(&[Tap(RAlt), Press(LShift), Tap(Kb6), Release(LShift), Tap(E)].as_slice());
-/// î
-const I_CIR: Action =
-    seq(&[Tap(RAlt), Press(LShift), Tap(Kb6), Release(LShift), Tap(I)].as_slice());
-/// ô
-const O_CIR: Action =
-    seq(&[Tap(RAlt), Press(LShift), Tap(Kb6), Release(LShift), Tap(O)].as_slice());
-/// ç
-const C_CED: Action = seq(&[Tap(RAlt), Tap(Comma), Tap(C)].as_slice());
-/// œ
-const OE: Action = seq(&[Tap(RAlt), Tap(O), Tap(E)].as_slice());
+/// à or À
+const A_GRV: Action = seq(&[
+    Filter(&[LShift, RShift].as_slice()),
+    Tap(RAlt),
+    Tap(Grave),
+    Restore,
+    Tap(A),
+]
+.as_slice());
+/// è or È
+const E_GRV: Action = seq(&[
+    Filter(&[LShift, RShift].as_slice()),
+    Tap(RAlt),
+    Tap(Grave),
+    Restore,
+    Tap(E),
+]
+.as_slice());
+/// ù or Ù
+const U_GRV: Action = seq(&[
+    Filter(&[LShift, RShift].as_slice()),
+    Tap(RAlt),
+    Tap(Grave),
+    Restore,
+    Tap(U),
+]
+.as_slice());
+/// é or É
+const E_ACU: Action = seq(&[
+    Filter(&[LShift, RShift].as_slice()),
+    Tap(RAlt),
+    Tap(Quote),
+    Restore,
+    Tap(E),
+]
+.as_slice());
+/// ê or Ê
+const E_CIR: Action = seq(&[
+    Filter(&[LShift, RShift].as_slice()),
+    Tap(RAlt),
+    Press(LShift),
+    Tap(Kb6),
+    Release(LShift),
+    Restore,
+    Tap(E),
+]
+.as_slice());
+/// î or Î
+const I_CIR: Action = seq(&[
+    Filter(&[LShift, RShift].as_slice()),
+    Tap(RAlt),
+    Press(LShift),
+    Tap(Kb6),
+    Release(LShift),
+    Restore,
+    Tap(I),
+]
+.as_slice());
+/// ô or Ô
+const O_CIR: Action = seq(&[
+    Filter(&[LShift, RShift].as_slice()),
+    Tap(RAlt),
+    Press(LShift),
+    Tap(Kb6),
+    Release(LShift),
+    Restore,
+    Tap(O),
+]
+.as_slice());
+/// ç or Ç
+const C_CED: Action = seq(&[
+    Filter(&[LShift, RShift].as_slice()),
+    Tap(RAlt),
+    Tap(Comma),
+    Restore,
+    Tap(C),
+]
+.as_slice());
+/// œ or Œ
+const OE: Action = seq(&[
+    Filter(&[LShift, RShift].as_slice()),
+    Tap(RAlt),
+    Restore,
+    Tap(O),
+    Tap(E),
+]
+.as_slice());
 /// €
-const EURO: Action = seq(&[Tap(RAlt), Tap(Equal), Tap(E)].as_slice());
+const EURO: Action = seq(&[
+    Filter(&[LShift, RShift].as_slice()),
+    Tap(RAlt),
+    Tap(Equal),
+    Press(LShift),
+    Tap(E),
+    Release(LShift),
+    Restore,
+]
+.as_slice());
 /// …
-const DOTS: Action = seq(&[Tap(RAlt), Tap(Dot), Tap(Dot)].as_slice());
+const DOTS: Action = seq(&[
+    Filter(&[LShift, RShift].as_slice()),
+    Tap(RAlt),
+    Tap(Dot),
+    Tap(Dot),
+    Restore,
+]
+.as_slice());
 
 /// Tmux: new window
 const T_NEW: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(C)].as_slice());
