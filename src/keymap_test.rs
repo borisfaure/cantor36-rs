@@ -1,4 +1,5 @@
 use core::convert::Infallible;
+use core::fmt::Debug;
 use keyberon::action::{
     Action,
     SequenceEvent::{self, *},
@@ -11,7 +12,11 @@ pub type KBLayout = Layout<10, 4, 2, Infallible>;
 
 /// A shortcut to create a `Action::Sequence`, useful to
 /// create compact layout.
-const fn seq<T, K>(events: &'static &'static [SequenceEvent<K>]) -> Action<T, K> {
+const fn seq<T, K>(events: &'static &'static [SequenceEvent<K>]) -> Action<T, K>
+where
+    T: 'static + Debug,
+    K: 'static + Debug,
+{
     Action::Sequence(events)
 }
 
