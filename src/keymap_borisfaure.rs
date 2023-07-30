@@ -8,7 +8,7 @@ use keyberon::key_code::KeyCode::*;
 use keyberon::layout::Layout;
 
 /// Keyboard Layout type to mask the number of layers
-pub type KBLayout = Layout<10, 4, 9, Infallible>;
+pub type KBLayout = Layout<10, 4, 8, Infallible>;
 
 /// Helper to create keys shifted
 macro_rules! s {
@@ -65,18 +65,13 @@ const HT_3_B: Action = ht!(l(3), k(B));
 /// Layer 3 (numbers/Fx) when held, or N
 const HT_3_N: Action = ht!(l(3), k(N));
 
-/// Num Mode
-const NUM: Action = ma(&[k(NumLock), d(4)].as_slice());
-/// Unset Num Mode
-const UNNUM: Action = ma(&[k(NumLock), d(0)].as_slice());
+/// Layer 4 (misc) when held, or T
+const HT_4_T: Action = ht!(l(4), k(T));
+/// Layer 4 (misc) when held, or Y
+const HT_4_Y: Action = ht!(l(4), k(Y));
 
-/// Layer 5 (misc) when held, or T
-const HT_5_T: Action = ht!(l(5), k(T));
-/// Layer 5 (misc) when held, or Y
-const HT_5_Y: Action = ht!(l(5), k(Y));
-
-/// Layer 6 (tmux) when held, or F
-const HT_6_F: Action = ht!(l(6), k(F));
+/// Layer 5 (tmux) when held, or F
+const HT_5_F: Action = ht!(l(5), k(F));
 
 /// Shift-Insert
 const S_INS: Action = m(&[LShift, Insert].as_slice());
@@ -97,7 +92,7 @@ const CAPS: Action = ma(&[k(CapsLock), d(8)].as_slice());
 const UNCAPS: Action = ma(&[k(CapsLock), d(0)].as_slice());
 
 /// Change default layer to GAME
-const GAME: Action = d(7);
+const GAME: Action = d(6);
 /// Change default layer to BASE
 const BASE: Action = d(0);
 
@@ -270,10 +265,10 @@ const T_0: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb0)].as_sli
 
 #[rustfmt::skip]
 /// Layout
-pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::layout::layout! {
+pub static LAYERS: keyberon::layout::Layers<10, 4, 8, Infallible> = keyberon::layout::layout! {
     { /* 0: BASE */
-[  Q         {HT_W_W}   E       R         {HT_5_T}    {HT_5_Y}   U         I  {HT_W_O}     P        ],
-[ {HT_C_A}    S         D      {HT_6_F}    G           H         J         K   L          {HT_C_SC} ],
+[  Q         {HT_W_W}   E       R         {HT_4_T}    {HT_4_Y}   U         I  {HT_W_O}     P        ],
+[ {HT_C_A}    S         D      {HT_5_F}    G           H         J         K   L          {HT_C_SC} ],
 [ {HT_S_Z}   {HT_A_X}   C       V         {HT_3_B}    {HT_3_N}   M         ,  {HT_A_DOT}  {HT_S_SL} ],
 [  n          n        Escape  {HT_1_TAB}  Space       Enter    {HT_2_BS}  n   n           n        ],
     } { /* 1: LOWER */
@@ -284,34 +279,29 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::la
     } { /* 2: RAISE */
         [ {BASE}   n    {E_ACU}  {E_CIR}  {E_GRV}      Home   {U_GRV}  {I_CIR}  {O_CIR}  PScreen ],
         [ {A_GRV} '_'    +        &        |           Left    Down     Up       Right   PgUp    ],
-        [ {EURO}  {OE}  {C_CED}  {CAPS}   {NUM}        End     Menu     n       {DOTS}   PgDown  ],
+        [ {EURO}  {OE}  {C_CED}  {CAPS}    n           End     Menu     n       {DOTS}   PgDown  ],
         [ n        n     n        n        n           Enter   BSpace   n        n       n       ],
     } { /* 3: NUMBERS Fx */
         [ .  4  5   6          =         /       F1   F2   F3   F4  ],
         [ 0  1  2   3          -         *       F5   F6   F7   F8  ],
-        [ ,  7  8   9          {NUM}     +       F9   F10  F11  F12 ],
+        [ ,  7  8   9          +         +       F9   F10  F11  F12 ],
         [ n  n  n  {HT_1_TAB}  Space    Enter   {HT_2_BS}    n    n    n   ],
-    } { /* 4: NUMBERS Fx Lock */
-        [ .  4  5   6          =         /       F1   F2   F3   F4  ],
-        [ 0  1  2   3          -         *       F5   F6   F7   F8  ],
-        [ ,  7  8   9          {UNNUM}   +       F9   F10  F11  F12 ],
-        [ n  n  n  {HT_1_TAB}  Space    Enter   {HT_2_BS}    n    n    n   ],
-    } { /* 5: MISC TODO: mouse */
+    } { /* 4: MISC TODO: mouse */
         [ Pause  {GAME}             n               R              n      n  n  n  n  n ],
         [ n      VolUp              Mute            VolDown        n      n  n  n  n  n ],
         [ n      MediaPreviousSong  MediaPlayPause  MediaNextSong  n      n  n  n  n  n ],
         [ n      n                  n               n              n      n  n  n  n  n ],
-    } { /* 6: TMUX TODO: sequences */
+    } { /* 5: TMUX TODO: sequences */
         [ {T_6}   {T_7} {T_8}   {T_9}   {T_0}      {T_1}   {T_2} {T_3}   {T_4}   {T_5}   ],
         [ {T_LST}  n     n       n       n         {T_PRV}  n    {T_SCR} {T_NXT} {T_CMD} ],
         [  n       n    {T_NEW} {T_CPY} {T_PST}     n       n    {T_RNM} {T_MOV} {T_PST} ],
         [  n       n     n       n       n          n       n     n       n       n      ],
-    } { /* 7: Gaming */
+    } { /* 6: Gaming */
         [ Q  W  E   R           T      Y       U          I  {HT_W_O}     P       ],
         [ A  S  D   F           G      H       J          K   L         {HT_C_SC} ],
         [ Z  X  C   V           B      N       M          ,  {HT_A_DOT} {HT_S_SL} ],
         [ n  n  n  {HT_1_TAB}  Space  Enter   {HT_2_BS}  n   n          n        ],
-    } { /* 8: Caps */
+    } { /* 7: Caps */
 [ {s!(Q)}   {s!(W)}  {s!(E)}   {s!(R)}  {s!(T)}         {s!(Y)}   {s!(U)}     {s!(I)}  {s!(O)}   {s!(P)}   ],
 [ {HT_C_SA} {s!(S)}  {s!(D)}   {s!(F)}  {s!(G)}         {s!(H)}   {s!(J)}     {s!(K)}  {s!(L)}   {HT_C_SC} ],
 [ {s!(Z)}   {s!(X)}  {s!(C)}   {s!(V)}  {s!(B)}         {s!(N)}   {s!(M)}      ,        .         /        ],
