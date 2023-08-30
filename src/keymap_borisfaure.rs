@@ -304,7 +304,7 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::la
         [ n  n  n  {HT_1_SP} Tab     Enter  {HT_2_BS}    n    n    n   ],
     } { /* 4: MISC TODO: mouse */
         [ Pause  {GAME}             {COLEMAN_DH}    {QWERTY}       n      n  n  n  n  n ],
-        [ n      VolUp              Mute            VolDown        n      n  n  n  n  n ],
+        [ n      VolDown            Mute            VolUp          n      n  n  n  n  n ],
         [ n      MediaPreviousSong  MediaPlayPause  MediaNextSong  n      n  n  n  n  n ],
         [ n      n                  n               n              n      n  n  n  n  n ],
     } { /* 5: TMUX */
