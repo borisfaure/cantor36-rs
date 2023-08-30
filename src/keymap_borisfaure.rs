@@ -58,8 +58,8 @@ const HT_A_X: Action = ht!(k(LAlt), k(X));
 /// Left Alt when held, or .
 const HT_A_DOT: Action = ht!(k(LAlt), k(Dot));
 
-/// Layer 1 (lower) when held, or Tab
-const HT_1_TAB: Action = ht!(l(1), k(Tab));
+/// Layer 1 (lower) when held, or Space
+const HT_1_SP: Action = ht!(l(1), k(Space));
 
 /// Layer 2 (raise) when held, or BackSpace
 const HT_2_BS: Action = ht!(l(2), k(BSpace));
@@ -283,10 +283,10 @@ const T_0: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb0)].as_sli
 /// Layout
 pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::layout::layout! {
     { /* 0: QWERTY */
-[  Q         {HT_W_W}   E       R         {HT_4_T}    {HT_4_Y}   U         I  {HT_W_O}     P        ],
-[ {HT_C_A}    S         D      {HT_5_F}    G           H         J         K   L          {HT_C_SC} ],
-[ {HT_S_Z}   {HT_A_X}   C       V         {HT_3_B}    {HT_3_N}   M         ,  {HT_A_DOT}  {HT_S_SL} ],
-[  n          n        Escape  {HT_1_TAB}  Space       Enter    {HT_2_BS}  n   n           n        ],
+[  Q         {HT_W_W}   E       R         {HT_4_T}       {HT_4_Y}   U         I  {HT_W_O}     P        ],
+[ {HT_C_A}    S         D      {HT_5_F}    G              H         J         K   L          {HT_C_SC} ],
+[ {HT_S_Z}   {HT_A_X}   C       V         {HT_3_B}       {HT_3_N}   M         ,  {HT_A_DOT}  {HT_S_SL} ],
+[  n          n        Escape  {HT_1_SP}   Tab           Enter    {HT_2_BS}  n   n           n        ],
     } { /* 1: LOWER */
         [ !  #  $    '(' ')'    ^       &       {S_INS}  *      ~   ],
         [ =  -  '`'  '{' '}'    Left    PgDown   PgUp   Right  '\\' ],
@@ -298,10 +298,10 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::la
         [ {EURO}   {OE}  {C_CED}  {CAPS}    n           End     Menu     n       {DOTS}   PgDown  ],
         [ n         n     n        n        n           Enter   BSpace   n        n       n       ],
     } { /* 3: NUMBERS Fx */
-        [ .  4  5   6          =         /       F1   F2   F3   F4  ],
-        [ 0  1  2   3          -         *       F5   F6   F7   F8  ],
-        [ ,  7  8   9          +         +       F9   F10  F11  F12 ],
-        [ n  n  n  {HT_1_TAB}  Space    Enter   {HT_2_BS}    n    n    n   ],
+        [ .  4  5   6         =         /    F1         F2   F3   F4   ],
+        [ 0  1  2   3         -         *    F5         F6   F7   F8   ],
+        [ ,  7  8   9         +         +    F9         F10  F11  F12  ],
+        [ n  n  n  {HT_1_SP} Tab     Enter  {HT_2_BS}    n    n    n   ],
     } { /* 4: MISC TODO: mouse */
         [ Pause  {GAME}             {COLEMAN_DH}    {QWERTY}       n      n  n  n  n  n ],
         [ n      VolUp              Mute            VolDown        n      n  n  n  n  n ],
@@ -313,10 +313,10 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::la
         [  n       n    {T_NEW} {T_CPY} {T_PST}     n       n    {T_RNM} {T_MOV} {T_PST} ],
         [  n       n     n       n       n          n       n     n       n       n      ],
     } { /* 6: Gaming */
-        [ Q  W  E   R           T      Y       U          I  {HT_W_O}     P       ],
-        [ A  S  D   F           G      H       J          K   L         {HT_C_SC} ],
-        [ Z  X  C   V           B      N       M          ,  {HT_A_DOT} {HT_S_SL} ],
-        [ n  n  n  {HT_1_TAB}  Space  Enter   {HT_2_BS}  n   n          n        ],
+        [ Q  W  E   R         T      Y       U          I  {HT_W_O}     P       ],
+        [ A  S  D   F         G      H       J          K   L         {HT_C_SC} ],
+        [ Z  X  C   V         B      N       M          ,  {HT_A_DOT} {HT_S_SL} ],
+        [ n  n  n  {HT_1_SP}  Tab    Enter   {HT_2_BS}  n   n          n        ],
     } { /* 7: Caps */
 [ {s!(Q)}   {s!(W)}  {s!(E)}   {s!(R)}  {s!(T)}         {s!(Y)}   {s!(U)}     {s!(I)}  {s!(O)}   {s!(P)}   ],
 [ {HT_C_SA} {s!(S)}  {s!(D)}   {s!(F)}  {s!(G)}         {s!(H)}   {s!(J)}     {s!(K)}  {s!(L)}   {HT_C_SC} ],
@@ -326,6 +326,6 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::la
 [  Q         {HT_W_W}   F       P         {HT_4_B}    {HT_4_J}   L         U  {HT_W_Y}     ;        ],
 [ {HT_C_A}    R         S      {HT_5_T}    G           M         N         E   I          {HT_C_O}  ],
 [ {HT_S_Z}   {HT_A_X}   C       D         {HT_3_V}    {HT_3_K}   H         ,  {HT_A_DOT}  {HT_S_SL} ],
-[  n          n        Escape  {HT_1_TAB}  Space       Enter    {HT_2_BS}  n   n           n        ],
+[  n          n        Escape  {HT_1_SP}   Tab        Enter    {HT_2_BS}  n   n           n        ],
     }
 };
