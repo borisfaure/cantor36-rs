@@ -296,7 +296,7 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::la
         [ {QWERTY}  n    {E_ACU}  {E_CIR}  {E_GRV}      Home   {U_GRV}  {I_CIR}  {O_CIR}  PScreen ],
         [ {A_GRV}  '_'    +        &        |           Left    Down     Up       Right   PgUp    ],
         [ {EURO}   {OE}  {C_CED}  {CAPS}    n           End     Menu     n       {DOTS}   PgDown  ],
-        [ n         n     n        n        n           Enter   BSpace   n        n       n       ],
+        [ n         n     n       BSpace    Delete      Enter    n       n        n       n       ],
     } { /* 3: NUMBERS Fx */
         [ .  4  5   6         =         /    F1         F2   F3   F4   ],
         [ 0  1  2   3         -         *    F5         F6   F7   F8   ],
