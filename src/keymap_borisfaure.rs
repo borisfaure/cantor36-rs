@@ -313,7 +313,7 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::la
         [  n       n    {T_NEW} {T_CPY} {T_PST}     n       n    {T_RNM} {T_MOV} {T_PST} ],
         [  n       n     n       n       n          n       n     n       n       n      ],
     } { /* 6: Gaming */
-        [ Q  W  E   R         T      Y       U          I  {HT_W_O}     P       ],
+        [ Q  W  E   R         T     {HT_4_Y} U          I  {HT_W_O}     P       ],
         [ A  S  D   F         G      H       J          K   L         {HT_C_SC} ],
         [ Z  X  C   V         B      N       M          ,  {HT_A_DOT} {HT_S_SL} ],
         [ n  n  n  {HT_1_SP}  Tab    Enter   {HT_2_BS}  n   n          n        ],
