@@ -70,8 +70,8 @@ const HT_3_B: Action = ht!(l(3), k(B));
 const HT_3_N: Action = ht!(l(3), k(N));
 /// Layer 3 (numbers/Fx) when held, or V
 const HT_3_V: Action = ht!(l(3), k(V));
-/// Layer 3 (numbers/Fx) when held, or K
-const HT_3_K: Action = ht!(l(3), k(K));
+/// Layer 3 (numbers/Fx) when held, or J
+const HT_3_J: Action = ht!(l(3), k(J));
 
 /// Layer 4 (misc) when held, or T
 const HT_4_T: Action = ht!(l(4), k(T));
@@ -79,8 +79,8 @@ const HT_4_T: Action = ht!(l(4), k(T));
 const HT_4_Y: Action = ht!(l(4), k(Y));
 /// Layer 4 (misc) when held, or B
 const HT_4_B: Action = ht!(l(4), k(B));
-/// Layer 4 (misc) when held, or J
-const HT_4_J: Action = ht!(l(4), k(J));
+/// Layer 4 (misc) when held, or K
+const HT_4_K: Action = ht!(l(4), k(K));
 
 /// Layer 5 (tmux) when held, or F
 const HT_5_F: Action = ht!(l(5), k(F));
@@ -323,9 +323,9 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::la
 [ {s!(Z)}   {s!(X)}  {s!(C)}   {s!(V)}  {s!(B)}         {s!(N)}   {s!(M)}      ,        .         /        ],
 [  n         n       {UNCAPS}   '_'      Space           Enter    {HT_2_BS}    n        n         n        ],
     } { /* 8: Coleman-DH */
-[  Q         {HT_W_W}   F       P         {HT_4_B}    {HT_4_J}   L         U   {HT_W_Y}     ;        ],
+[  Q         {HT_W_W}   F       P         {HT_4_B}    {HT_4_K}   L         U   {HT_W_Y}     ;        ],
 [ {HT_C_A}    R         S      {HT_5_T}    G           M         N         E    I          {HT_C_O}  ],
-[ {HT_S_Z}   {HT_A_X}   C       D         {HT_3_V}    {HT_3_K}   H         ,   {HT_A_DOT}  {HT_S_SL} ],
+[ {HT_S_Z}   {HT_A_X}   C       D         {HT_3_V}    {HT_3_J}   H         ,   {HT_A_DOT}  {HT_S_SL} ],
 [  n          n        Escape  {HT_1_SP}   Tab         Enter    {HT_2_BS} RAlt  n           n        ],
     }
 };
