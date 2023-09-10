@@ -122,7 +122,7 @@ where
 /// Caps Mode
 const CAPS: Action = ma(&[k(CapsLock), d(L_CAPS)].as_slice());
 /// Unset Caps Mode
-const UNCAPS: Action = ma(&[k(CapsLock), d(L_QWERTY)].as_slice());
+const UNCAPS: Action = ma(&[k(CapsLock), d(L_COLEMAN)].as_slice());
 
 /// Change default layer to GAMING
 const GAME: Action = d(L_GAMING);
