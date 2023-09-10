@@ -35,6 +35,25 @@ macro_rules! ht {
     };
 }
 
+/// QWERTY layer
+const L_QWERTY: usize = 0;
+/// LOWER layer
+const L_LOWER: usize = 1;
+/// RAISE layer
+const L_RAISE: usize = 2;
+/// NUMBERS layer
+const L_NUM: usize = 3;
+/// MISC layer
+const L_MISC: usize = 4;
+/// TMUX layer
+const L_TMUX: usize = 5;
+/// GAMING layer
+const L_GAMING: usize = 6;
+/// CAPS layer
+const L_CAPS: usize = 7;
+/// COLEMAN-DH layer
+const L_COLEMAN: usize = 8;
+
 /// Win when held, or W
 const HT_W_W: Action = ht!(k(LGui), k(W));
 /// Win when held, or O
@@ -59,33 +78,33 @@ const HT_A_X: Action = ht!(k(LAlt), k(X));
 const HT_A_DOT: Action = ht!(k(LAlt), k(Dot));
 
 /// Layer 1 (lower) when held, or Space
-const HT_1_SP: Action = ht!(l(1), k(Space));
+const HT_1_SP: Action = ht!(l(L_LOWER), k(Space));
 
 /// Layer 2 (raise) when held, or BackSpace
-const HT_2_BS: Action = ht!(l(2), k(BSpace));
+const HT_2_BS: Action = ht!(l(L_RAISE), k(BSpace));
 
 /// Layer 3 (numbers/Fx) when held, or B
-const HT_3_B: Action = ht!(l(3), k(B));
+const HT_3_B: Action = ht!(l(L_NUM), k(B));
 /// Layer 3 (numbers/Fx) when held, or N
-const HT_3_N: Action = ht!(l(3), k(N));
+const HT_3_N: Action = ht!(l(L_NUM), k(N));
 /// Layer 3 (numbers/Fx) when held, or V
-const HT_3_V: Action = ht!(l(3), k(V));
+const HT_3_V: Action = ht!(l(L_NUM), k(V));
 /// Layer 3 (numbers/Fx) when held, or J
-const HT_3_J: Action = ht!(l(3), k(J));
+const HT_3_J: Action = ht!(l(L_NUM), k(J));
 
 /// Layer 4 (misc) when held, or T
-const HT_4_T: Action = ht!(l(4), k(T));
+const HT_4_T: Action = ht!(l(L_MISC), k(T));
 /// Layer 4 (misc) when held, or Y
-const HT_4_Y: Action = ht!(l(4), k(Y));
+const HT_4_Y: Action = ht!(l(L_MISC), k(Y));
 /// Layer 4 (misc) when held, or B
-const HT_4_B: Action = ht!(l(4), k(B));
+const HT_4_B: Action = ht!(l(L_MISC), k(B));
 /// Layer 4 (misc) when held, or K
-const HT_4_K: Action = ht!(l(4), k(K));
+const HT_4_K: Action = ht!(l(L_MISC), k(K));
 
 /// Layer 5 (tmux) when held, or F
-const HT_5_F: Action = ht!(l(5), k(F));
+const HT_5_F: Action = ht!(l(L_TMUX), k(F));
 /// Layer 5 (tmux) when held, or T
-const HT_5_T: Action = ht!(l(5), k(T));
+const HT_5_T: Action = ht!(l(L_TMUX), k(T));
 
 /// Shift-Insert
 const S_INS: Action = m(&[LShift, Insert].as_slice());
@@ -101,16 +120,16 @@ where
 }
 
 /// Caps Mode
-const CAPS: Action = ma(&[k(CapsLock), d(8)].as_slice());
+const CAPS: Action = ma(&[k(CapsLock), d(L_CAPS)].as_slice());
 /// Unset Caps Mode
-const UNCAPS: Action = ma(&[k(CapsLock), d(0)].as_slice());
+const UNCAPS: Action = ma(&[k(CapsLock), d(L_QWERTY)].as_slice());
 
-/// Change default layer to GAME
-const GAME: Action = d(6);
+/// Change default layer to GAMING
+const GAME: Action = d(L_GAMING);
 /// Change default layer to QWERTY
-const QWERTY: Action = d(0);
-/// Change default layer to WORKMAN
-const COLEMAN_DH: Action = d(8);
+const QWERTY: Action = d(L_QWERTY);
+/// Change default layer to COLEMAN_DH
+const COLEMAN_DH: Action = d(L_COLEMAN);
 
 /// A shortcut to create a `Action::Sequence`, useful to
 /// create compact layout.
