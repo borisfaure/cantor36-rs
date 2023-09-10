@@ -35,8 +35,8 @@ macro_rules! ht {
     };
 }
 
-/// QWERTY layer
-const L_QWERTY: usize = 0;
+/// COLEMAN-DH layer
+const L_COLEMAN: usize = 0;
 /// LOWER layer
 const L_LOWER: usize = 1;
 /// RAISE layer
@@ -51,8 +51,8 @@ const L_TMUX: usize = 5;
 const L_GAMING: usize = 6;
 /// CAPS layer
 const L_CAPS: usize = 7;
-/// COLEMAN-DH layer
-const L_COLEMAN: usize = 8;
+/// QWERTY layer
+const L_QWERTY: usize = 8;
 
 /// Win when held, or W
 const HT_W_W: Action = ht!(k(LGui), k(W));
@@ -301,11 +301,11 @@ const T_0: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb0)].as_sli
 #[rustfmt::skip]
 /// Layout
 pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::layout::layout! {
-    { /* 0: QWERTY */
-[  Q         {HT_W_W}   E       R         {HT_4_T}       {HT_4_Y}   U         I    {HT_W_O}     P        ],
-[ {HT_C_A}    S         D      {HT_5_F}    G              H         J         K     L          {HT_C_SC} ],
-[ {HT_S_Z}   {HT_A_X}   C       V         {HT_3_B}       {HT_3_N}   M         ,    {HT_A_DOT}  {HT_S_SL} ],
-[  n          n        Escape  {HT_1_SP}   Tab           Enter    {HT_2_BS}  RAlt   n           n        ],
+   { /* 0: Coleman-DH */
+[  Q         {HT_W_W}   F       P         {HT_4_B}    {HT_4_K}   L         U   {HT_W_Y}     ;        ],
+[ {HT_C_A}    R         S      {HT_5_T}    G           M         N         E    I          {HT_C_O}  ],
+[ {HT_S_Z}   {HT_A_X}   C       D         {HT_3_V}    {HT_3_J}   H         ,   {HT_A_DOT}  {HT_S_SL} ],
+[  n          n        Escape  {HT_1_SP}   Tab         Enter    {HT_2_BS} RAlt  n           n        ],
     } { /* 1: LOWER */
         [ !  #  $    '(' ')'    ^       &       {S_INS}  *      ~   ],
         [ =  -  '`'  '{' '}'    Left    PgDown   PgUp   Right  '\\' ],
@@ -332,19 +332,19 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::la
         [  n       n    {T_NEW} {T_CPY} {T_PST}     n       n    {T_RNM} {T_MOV} {T_PST} ],
         [  n       n     n       n       n          n       n     n       n       n      ],
     } { /* 6: Gaming */
-        [ Q  W  E   R         T     {HT_4_Y} U          I  {HT_W_O}     P       ],
-        [ A  S  D   F         G      H       J          K   L         {HT_C_SC} ],
-        [ Z  X  C   V         B      N       M          ,  {HT_A_DOT} {HT_S_SL} ],
-        [ n  n  n  {HT_1_SP}  Tab    Enter   {HT_2_BS}  n   n          n        ],
+        [ Q  W  E   R         T              {HT_4_Y} U          I  {HT_W_O}     P       ],
+        [ A  S  D   F         G               H       J          K   L         {HT_C_SC} ],
+        [ Z  X  C   V         B               N       M          ,  {HT_A_DOT} {HT_S_SL} ],
+        [ n  n  n  {HT_1_SP}  Tab             Enter   {HT_2_BS}  n   n          n        ],
     } { /* 7: Caps */
 [ {s!(Q)}   {s!(W)}  {s!(E)}   {s!(R)}  {s!(T)}         {s!(Y)}   {s!(U)}     {s!(I)}  {s!(O)}   {s!(P)}   ],
 [ {HT_C_SA} {s!(S)}  {s!(D)}   {s!(F)}  {s!(G)}         {s!(H)}   {s!(J)}     {s!(K)}  {s!(L)}   {HT_C_SC} ],
 [ {s!(Z)}   {s!(X)}  {s!(C)}   {s!(V)}  {s!(B)}         {s!(N)}   {s!(M)}      ,        .         /        ],
 [  n         n       {UNCAPS}   '_'      Space           Enter    {HT_2_BS}    n        n         n        ],
-    } { /* 8: Coleman-DH */
-[  Q         {HT_W_W}   F       P         {HT_4_B}    {HT_4_K}   L         U   {HT_W_Y}     ;        ],
-[ {HT_C_A}    R         S      {HT_5_T}    G           M         N         E    I          {HT_C_O}  ],
-[ {HT_S_Z}   {HT_A_X}   C       D         {HT_3_V}    {HT_3_J}   H         ,   {HT_A_DOT}  {HT_S_SL} ],
-[  n          n        Escape  {HT_1_SP}   Tab         Enter    {HT_2_BS} RAlt  n           n        ],
+    } { /* 8: QWERTY */
+[  Q         {HT_W_W}   E       R         {HT_4_T}       {HT_4_Y}   U         I    {HT_W_O}     P        ],
+[ {HT_C_A}    S         D      {HT_5_F}    G              H         J         K     L          {HT_C_SC} ],
+[ {HT_S_Z}   {HT_A_X}   C       V         {HT_3_B}       {HT_3_N}   M         ,    {HT_A_DOT}  {HT_S_SL} ],
+[  n          n        Escape  {HT_1_SP}   Tab           Enter    {HT_2_BS}  RAlt   n           n        ],
     }
 };
