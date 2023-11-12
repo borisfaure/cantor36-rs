@@ -91,6 +91,10 @@ const HT_3_N: Action = ht!(l(L_NUM), k(N));
 const HT_3_V: Action = ht!(l(L_NUM), k(V));
 /// Layer 3 (numbers/Fx) when held, or J
 const HT_3_J: Action = ht!(l(L_NUM), k(J));
+/// Layer 3 (numbers/Fx) when held, or RAlt
+const HT_3_RA: Action = ht!(l(L_NUM), k(RAlt));
+/// Layer 3 (numbers/Fx) when held, or Escape
+const HT_3_ESC: Action = ht!(l(L_NUM), k(Escape));
 
 /// Layer 4 (misc) when held, or T
 const HT_4_T: Action = ht!(l(L_MISC), k(T));
@@ -302,10 +306,10 @@ const T_0: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb0)].as_sli
 /// Layout
 pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::layout::layout! {
    { /* 0: Coleman-DH */
-[  Q         {HT_W_W}   F       P         {HT_4_B}    {HT_4_K}   L         U   {HT_W_Y}     ;        ],
-[ {HT_C_A}    R         S      {HT_5_T}    G           M         N         E    I          {HT_C_O}  ],
-[ {HT_S_Z}   {HT_A_X}   C       D         {HT_3_V}    {HT_3_J}   H         ,   {HT_A_DOT}  {HT_S_SL} ],
-[  n          n        Escape  {HT_1_SP}   Tab         Enter    {HT_2_BS} RAlt  n           n        ],
+[  Q         {HT_W_W}   F          P         {HT_4_B}    {HT_4_K}   L         U        {HT_W_Y}     ;        ],
+[ {HT_C_A}    R         S         {HT_5_T}    G           M         N         E         I          {HT_C_O}  ],
+[ {HT_S_Z}   {HT_A_X}   C          D         {HT_3_V}    {HT_3_J}   H         ,        {HT_A_DOT}  {HT_S_SL} ],
+[  n          n        {HT_3_ESC} {HT_1_SP}   Tab         Enter    {HT_2_BS} {HT_3_RA}  n           n        ],
     } { /* 1: LOWER */
         [ !  #  $    '(' ')'    ^       &       {S_INS}  *      ~   ],
         [ =  -  '`'  '{' '}'    Left    PgDown   PgUp   Right  '\\' ],
