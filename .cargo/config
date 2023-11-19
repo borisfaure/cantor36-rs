@@ -5,7 +5,7 @@ f = "flash --chip STM32F401CDUx"
 
 # uncomment ONE of these three option to make `cargo run` start a GDB session
 #runner = "gdb -q -x openocd.gdb"
-runner = "probe-run --chip STM32F401CDUx"
+runner = "probe-rs run --chip STM32F401CDUx"
 
 rustflags = [
     "-C", "linker=flip-link",
