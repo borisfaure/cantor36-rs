@@ -24,7 +24,8 @@ use rtic::app;
 use stm32f4xx_hal as hal;
 use usb_device::bus::UsbBusAllocator;
 use usb_device::class::UsbClass as _;
-use usb_device::device::{UsbDeviceBuilder, UsbDeviceState, UsbVidPid};
+use usb_device::descriptor::lang_id::LangID;
+use usb_device::device::{StringDescriptors, UsbDeviceBuilder, UsbDeviceState, UsbVidPid};
 
 #[cfg(not(any(feature = "right", feature = "left",)))]
 compile_error!("Either feature \"right\" or \"left\" must be enabled.");
@@ -169,9 +170,11 @@ mod app {
 
         let usb_class = keyberon::new_class(usb_bus, leds);
         let usb_dev = UsbDeviceBuilder::new(usb_bus, UsbVidPid(VID, PID))
-            .manufacturer(MANUFACTURER)
-            .product(PRODUCT)
-            .serial_number(env!("CARGO_PKG_VERSION"))
+            .strings(&[StringDescriptors::new(LangID::EN)
+                .manufacturer(MANUFACTURER)
+                .product(PRODUCT)
+                .serial_number(env!("CARGO_PKG_VERSION"))])
+            .expect("Failed to set strings")
             .build();
 
         let mut timer = hal::timer::Timer::new(cx.device.TIM2, &clocks).counter_hz();
@@ -185,7 +188,7 @@ mod app {
         });
         let mut serial =
             serial::Serial::new(cx.device.USART1, serial_pins, 38_400.bps(), &clocks).unwrap();
-        serial.listen(serial::Event::Rxne);
+        serial.listen(serial::Event::RxNotEmpty);
         let (serial_tx, serial_rx) = serial.split();
 
         let matrix_pins = [
