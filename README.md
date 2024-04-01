@@ -1,4 +1,4 @@
-![CI](https://github.com/borisfaure/cantor36-rs/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/borisfaure/cantor36-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/borisfaure/cantor36-rs/actions/workflows/ci.yml)
 
 # Rust Firmware for the Cantor36 keyboard
 
