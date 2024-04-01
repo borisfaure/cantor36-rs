@@ -28,7 +28,7 @@ keyberon = { git = "https://github.com/borisfaure/keyberon", branch = "shifted_s
 #keyberon = { path = "../keyberon", features = ["defmt"] }
 #keyberon = { path = "../keyberon"}
 embedded-hal = "1.0"
-nb = "1.0"
+nb = "1.1"
 
 [profile.release]
 opt-level = 'z'
