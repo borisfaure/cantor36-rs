@@ -14,12 +14,20 @@ It is based on the [Keyberon library](https://github.com/TeXitoi/keyberon).
 - Multiple keymaps
 - Hold Tap actions
 - Sequences
+- CapsLock
+
+## On CapsLock support
+
+The firmware generates an event on Col 0, Row 3 when the CapsLock led changes
+states.  This is not a wired element but can be used to support CapsLock on
+the keymap, to have a different behavior when CapsLock is set.
 
 ## What's missing
 
 - No support for controlling the mouse
 - One Shot Actions
 - ...
+
 
 ## Installing the needed tools
 

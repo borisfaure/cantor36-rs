@@ -10,13 +10,6 @@ use keyberon::layout::Layout;
 /// Keyboard Layout type to mask the number of layers
 pub type KBLayout = Layout<10, 4, 9, Infallible>;
 
-/// Helper to create keys shifted
-macro_rules! s {
-    ($k:ident) => {
-        m(&[LShift, $k].as_slice())
-    };
-}
-
 /// Timeout to consider a key as held
 const TIMEOUT: u16 = 200;
 /// Disable tap_hold_interval
@@ -62,8 +55,6 @@ const HT_W_O: Action = ht!(k(RGui), k(O));
 const HT_W_Y: Action = ht!(k(RGui), k(Y));
 /// Left Control when held, or A
 const HT_C_A: Action = ht!(k(LCtrl), k(A));
-/// Left Control when held, or Shift-A
-const HT_C_SA: Action = ht!(k(LCtrl), s!(A));
 /// Right Control when held, or SemiColon
 const HT_C_SC: Action = ht!(k(RCtrl), k(SColon));
 /// Right Control when held, or O
@@ -113,20 +104,13 @@ const HT_5_T: Action = ht!(l(L_TMUX), k(T));
 /// Shift-Insert
 const S_INS: Action = m(&[LShift, Insert].as_slice());
 
-/// A shortcut to create a `Action::MultipleActions`, useful to
-/// create compact layout.
-const fn ma<T, K>(actions: &'static &'static [Action<T, K>]) -> Action<T, K>
-where
-    T: Debug,
-    K: Debug,
-{
-    Action::MultipleActions(actions)
-}
-
 /// Caps Mode
-const CAPS: Action = ma(&[k(CapsLock), d(L_CAPS)].as_slice());
+const CAPS: Action = k(CapsLock);
+const VCAPS: Action = d(L_CAPS);
+
 /// Unset Caps Mode
-const UNCAPS: Action = ma(&[k(CapsLock), d(L_COLEMAN)].as_slice());
+const UNCAPS: Action = k(CapsLock);
+const VUNCAPS: Action = d(L_COLEMAN);
 
 /// Change default layer to GAMING
 const GAME: Action = d(L_GAMING);
@@ -309,46 +293,46 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::la
 [  Q         {HT_W_W}   F          P         {HT_4_B}    {HT_4_K}   L         U        {HT_W_Y}     ;        ],
 [ {HT_C_A}    R         S         {HT_5_T}    G           M         N         E         I          {HT_C_O}  ],
 [ {HT_S_Z}   {HT_A_X}   C          D         {HT_3_V}    {HT_3_J}   H         ,        {HT_A_DOT}  {HT_S_SL} ],
-[  n          n        {HT_3_ESC} {HT_1_SP}   Tab         Enter    {HT_2_BS} {HT_3_RA}  n           n        ],
+[ {VCAPS}      n        {HT_3_ESC} {HT_1_SP}   Tab         Enter    {HT_2_BS} {HT_3_RA}  n           n        ],
     } { /* 1: LOWER */
         [ !  #  $    '(' ')'    ^       &       {S_INS}  *      ~   ],
         [ =  -  '`'  '{' '}'    Left    PgDown   PgUp   Right  '\\' ],
         [ @  &  %    '[' ']'    n       n         n     '\''   '"'  ],
-        [ n  n  n     n   n     Escape  Delete    n      n      n   ],
+        [ t  t  n     n   n     Escape  Delete    n      t      t   ],
     } { /* 2: RAISE */
         [ {QWERTY}  n    {E_ACU}  {E_CIR}  {E_GRV}      Home   {U_GRV}  {I_CIR}  {O_CIR}  PScreen ],
         [ {A_GRV}  '_'    +        &        |           Left    Down     Up       Right   PgUp    ],
         [ {EURO}   {OE}  {C_CED}  {CAPS}    n           End     Menu     n       {DOTS}   PgDown  ],
-        [ n         n     n       BSpace    Delete      Enter   Space    n        n       n       ],
+        [ t         t     n       BSpace    Delete      Enter   Space    n        t       t       ],
     } { /* 3: NUMBERS Fx */
         [ .  4  5   6         =         /    F1         F2   F3   F4   ],
         [ 0  1  2   3         -         *    F5         F6   F7   F8   ],
         [ ,  7  8   9         +         +    F9         F10  F11  F12  ],
-        [ n  n  n  {HT_1_SP} Tab     Enter  {HT_2_BS}    n    n    n   ],
+        [ t  t  n  {HT_1_SP} Tab     Enter  {HT_2_BS}    n    t    t   ],
     } { /* 4: MISC TODO: mouse */
         [ Pause  {GAME}             {COLEMAN_DH}    {QWERTY}       n      n  n  n  n  n ],
         [ n      VolDown            Mute            VolUp          n      n  n  n  n  n ],
         [ n      MediaPreviousSong  MediaPlayPause  MediaNextSong  n      n  n  n  n  n ],
-        [ n      n                  n               n              n      n  n  n  n  n ],
+        [ t      t                  n               n              n      n  n  n  t  t ],
     } { /* 5: TMUX */
         [ {T_6}   {T_7} {T_8}   {T_9}   {T_0}      {T_1}   {T_2} {T_3}   {T_4}   {T_5}   ],
         [ {T_LST}  n     n       n       n         {T_PRV}  n    {T_SCR} {T_NXT} {T_CMD} ],
         [  n       n    {T_NEW} {T_CPY} {T_PST}     n       n    {T_RNM} {T_MOV} {T_PST} ],
-        [  n       n     n       n       n          n       n     n       n       n      ],
+        [  t       t     n       n       n          n       n     n       t       t      ],
     } { /* 6: Gaming */
         [ Q  W  E   R         T              {HT_4_Y} U          I  {HT_W_O}     P       ],
         [ A  S  D   F         G               H       J          K   L         {HT_C_SC} ],
         [ Z  X  C   V         B               N       M          ,  {HT_A_DOT} {HT_S_SL} ],
-        [ n  n  n  {HT_1_SP}  Tab             Enter   {HT_2_BS}  n   n          n        ],
+        [ t  t  n  {HT_1_SP}  Tab             Enter   {HT_2_BS}  n   t          t        ],
     } { /* 7: Caps */
-[ {s!(Q)}   {s!(W)}  {s!(E)}   {s!(R)}  {s!(T)}         {s!(Y)}   {s!(U)}     {s!(I)}  {s!(O)}   {s!(P)}   ],
-[ {HT_C_SA} {s!(S)}  {s!(D)}   {s!(F)}  {s!(G)}         {s!(H)}   {s!(J)}     {s!(K)}  {s!(L)}   {HT_C_SC} ],
-[ {s!(Z)}   {s!(X)}  {s!(C)}   {s!(V)}  {s!(B)}         {s!(N)}   {s!(M)}      ,        .         /        ],
-[  n         n       {UNCAPS}   '_'      Space           Enter    {HT_2_BS}    n        n         n        ],
+[  Q         {HT_W_W}   F         P         {HT_4_B}    {HT_4_K}   L        U  {HT_W_Y}     ;        ],
+[ {HT_C_A}    R         S        {HT_5_T}    G           M         N        E   I          {HT_C_O}  ],
+[ {HT_S_Z}   {HT_A_X}   C         D         {HT_3_V}    {HT_3_J}   H        ,  {HT_A_DOT}  {HT_S_SL} ],
+[ {VUNCAPS}   t        {UNCAPS}  {HT_1_SP}   '_'         Enter   {HT_2_BS}  n   t           t        ],
     } { /* 8: QWERTY */
 [  Q         {HT_W_W}   E       R         {HT_4_T}       {HT_4_Y}   U         I    {HT_W_O}     P        ],
 [ {HT_C_A}    S         D      {HT_5_F}    G              H         J         K     L          {HT_C_SC} ],
 [ {HT_S_Z}   {HT_A_X}   C       V         {HT_3_B}       {HT_3_N}   M         ,    {HT_A_DOT}  {HT_S_SL} ],
-[  n          n        Escape  {HT_1_SP}   Tab           Enter    {HT_2_BS}  RAlt   n           n        ],
+[  t          t        Escape  {HT_1_SP}   Tab           Enter    {HT_2_BS}  RAlt   t           t        ],
     }
 };
