@@ -73,12 +73,17 @@ const MANUFACTURER: &str = "Boris Faure";
 pub struct Leds {
     /// CapsLock LED state
     pub caps_lock: bool,
+    /// NumLock LED state
+    pub num_lock: bool,
 }
 
 /// Implement the keyberon::Leds trait for the Leds struct
 impl keyberon::keyboard::Leds for Leds {
     fn caps_lock(&mut self, state: bool) {
         self.caps_lock = state;
+    }
+    fn num_lock(&mut self, state: bool) {
+        self.num_lock = state;
     }
 }
 
@@ -120,6 +125,8 @@ mod app {
         serial_buf: [u8; 4],
         /// CapsLock state
         caps_lock: bool,
+        /// NumLock state
+        num_lock: bool,
     }
 
     #[init(local = [bus: Option<UsbBusAllocator<UsbBusType>> = None])]
@@ -155,7 +162,10 @@ mod app {
 
         *cx.local.bus = Some(UsbBusType::new(usb, unsafe { &mut EP_MEMORY }));
         let usb_bus = cx.local.bus.as_ref().unwrap();
-        let leds = Leds { caps_lock: false };
+        let leds = Leds {
+            caps_lock: false,
+            num_lock: false,
+        };
 
         let usb_class = keyberon::new_class(usb_bus, leds);
         let usb_dev = UsbDeviceBuilder::new(usb_bus, UsbVidPid(VID, PID))
@@ -225,6 +235,7 @@ mod app {
                 serial_rx,
                 serial_buf: [0; 4],
                 caps_lock: false,
+                num_lock: false,
             },
             init::Monotonics(),
         )
@@ -238,7 +249,7 @@ mod app {
     #[task(
         binds = TIM2,
         priority = 1,
-        local = [matrix, debouncer, timer, serial_tx, caps_lock],
+        local = [matrix, debouncer, timer, serial_tx, caps_lock, num_lock],
         shared = [usb_dev, usb_class, layout]
     )]
     fn tick(mut cx: tick::Context) {
@@ -247,15 +258,25 @@ mod app {
         let is_host = cx.shared.usb_dev.lock(|d| d.state()) == UsbDeviceState::Configured;
 
         let mut led_caps_lock = false;
-        cx.shared
-            .usb_class
-            .lock(|k| led_caps_lock = k.device_mut().leds_mut().caps_lock);
+        let mut led_num_lock = false;
+        cx.shared.usb_class.lock(|k| {
+            let leds = k.device_mut().leds_mut();
+            led_caps_lock = leds.caps_lock;
+            led_num_lock = leds.num_lock;
+        });
         if *cx.local.caps_lock != led_caps_lock {
             *cx.local.caps_lock = led_caps_lock;
             // send a key press and release event for the CapsLock key so that
             // the keymap can do something with it, like changing the default layer
             cx.shared.layout.event(Event::Press(3, 0));
             cx.shared.layout.event(Event::Release(3, 0));
+        }
+        if *cx.local.num_lock != led_num_lock {
+            *cx.local.num_lock = led_num_lock;
+            // send a key press and release event for the CapsLock key so that
+            // the keymap can do something with it, like changing the default layer
+            cx.shared.layout.event(Event::Press(3, 1));
+            cx.shared.layout.event(Event::Release(3, 1));
         }
 
         for event in cx

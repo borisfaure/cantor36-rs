@@ -106,11 +106,23 @@ const S_INS: Action = m(&[LShift, Insert].as_slice());
 
 /// Caps Mode
 const CAPS: Action = k(CapsLock);
+/// Caps from LED change
 const VCAPS: Action = d(L_CAPS);
 
 /// Unset Caps Mode
 const UNCAPS: Action = k(CapsLock);
+/// Unset Caps from LED change
 const VUNCAPS: Action = d(L_COLEMAN);
+
+/// Num Lock Mode
+const NUMLCK: Action = k(NumLock);
+/// Num Lock from LED change
+const VNUM: Action = d(L_NUM);
+
+/// Unset Num Lock Mode
+const UNNUM: Action = k(NumLock);
+/// Unset Num Lock from LED change
+const VUNNUM: Action = d(L_COLEMAN);
 
 /// Change default layer to GAMING
 const GAME: Action = d(L_GAMING);
@@ -293,7 +305,7 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::la
 [  Q         {HT_W_W}   F          P         {HT_4_B}    {HT_4_K}   L         U        {HT_W_Y}     ;        ],
 [ {HT_C_A}    R         S         {HT_5_T}    G           M         N         E         I          {HT_C_O}  ],
 [ {HT_S_Z}   {HT_A_X}   C          D         {HT_3_V}    {HT_3_J}   H         ,        {HT_A_DOT}  {HT_S_SL} ],
-[ {VCAPS}      n        {HT_3_ESC} {HT_1_SP}   Tab         Enter    {HT_2_BS} {HT_3_RA}  n           n        ],
+[ {VCAPS}    {VNUM}    {HT_3_ESC} {HT_1_SP}   Tab         Enter    {HT_2_BS} {HT_3_RA}  n           n        ],
     } { /* 1: LOWER */
         [ !  #  $    '(' ')'    ^       &       {S_INS}  *      ~   ],
         [ =  -  '`'  '{' '}'    Left    PgDown   PgUp   Right  '\\' ],
@@ -302,13 +314,13 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::la
     } { /* 2: RAISE */
         [ {QWERTY}  n    {E_ACU}  {E_CIR}  {E_GRV}      Home   {U_GRV}  {I_CIR}  {O_CIR}  PScreen ],
         [ {A_GRV}  '_'    +        &        |           Left    Down     Up       Right   PgUp    ],
-        [ {EURO}   {OE}  {C_CED}  {CAPS}    n           End     Menu     n       {DOTS}   PgDown  ],
+        [ {EURO}   {OE}  {C_CED}  {CAPS}   {NUMLCK}     End     Menu     n       {DOTS}   PgDown  ],
         [ t         t     n       BSpace    Delete      Enter   Space    n        t       t       ],
     } { /* 3: NUMBERS Fx */
         [ .  4  5   6         =         /    F1         F2   F3   F4   ],
         [ 0  1  2   3         -         *    F5         F6   F7   F8   ],
         [ ,  7  8   9         +         +    F9         F10  F11  F12  ],
-        [ t  t  n  {HT_1_SP} Tab     Enter  {HT_2_BS}    n    t    t   ],
+        [ t {VUNNUM} {UNNUM}  {HT_1_SP} Tab     Enter  {HT_2_BS}    n    t    t   ],
     } { /* 4: MISC TODO: mouse */
         [ Pause  {GAME}             {COLEMAN_DH}    {QWERTY}       n      n  n  n  n  n ],
         [ n      VolDown            Mute            VolUp          n      n  n  n  n  n ],

@@ -14,13 +14,15 @@ It is based on the [Keyberon library](https://github.com/TeXitoi/keyberon).
 - Multiple keymaps
 - Hold Tap actions
 - Sequences
-- CapsLock
+- CapsLock & NumLock
 
-## On CapsLock support
+## On CapsLock & NumLock support
 
 The firmware generates an event on Col 0, Row 3 when the CapsLock led changes
 states.  This is not a wired element but can be used to support CapsLock on
 the keymap, to have a different behavior when CapsLock is set.
+
+The same occurs with NumLock but the event is on Col 1, Row 3.
 
 ## What's missing
 
