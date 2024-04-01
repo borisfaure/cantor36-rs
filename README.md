@@ -45,7 +45,7 @@ In order to generate and install the firmware for the keymap `keymap_basic`
 for the `left` side using [probe-rs](https://probe.rs/):
 
 ```shell
-cargo f --release --features="left,keymap_borisfaure"
+cargo f --release --no-default-features --features="left,keymap_borisfaure"
 ```
 
 ## License
