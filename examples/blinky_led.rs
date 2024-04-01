@@ -12,7 +12,7 @@ mod app {
         gpio::{self, Output, PushPull},
         pac::TIM2,
         prelude::*,
-        timer::{self, Event},
+        timer::{self, Event, Flag},
     };
 
     // Resources shared between tasks
@@ -75,8 +75,6 @@ mod app {
         // 2) Clear Timer Pending Interrupt
 
         ctx.local.led.toggle();
-        ctx.shared
-            .timer
-            .lock(|tim| tim.clear_interrupt(Event::Update));
+        ctx.shared.timer.lock(|tim| tim.clear_flags(Flag::Update));
     }
 }
