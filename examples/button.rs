@@ -13,11 +13,6 @@ use {defmt_rtt as _, panic_probe as _};
 async fn main(_spawner: Spawner) {
     let config = Config::default();
     let p = embassy_stm32::init(config);
-    info!("Hello World!");
-    let config = Config::default();
-    if let Some(ref hse) = config.rcc.hse {
-        info!("config: {:?}", hse.freq.0);
-    }
 
     let mut led = Output::new(p.PC13, Level::High, Speed::Low);
     let button = Input::new(p.PA0, Pull::Up);
