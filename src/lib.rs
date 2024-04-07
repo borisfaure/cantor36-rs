@@ -13,6 +13,9 @@ use embassy_usb::control::OutResponse;
 use embassy_usb::Handler;
 use usbd_hid::descriptor::{KeyboardReport, SerializedDescriptor};
 
+/// Keyboard matrix handling
+pub mod keys;
+
 /// USB VID based on
 /// <https://github.com/obdev/v-usb/blob/master/usbdrv/USB-IDs-for-free.txt>
 const VID: u16 = 0x16c0;

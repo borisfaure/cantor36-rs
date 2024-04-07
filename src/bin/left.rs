@@ -9,14 +9,14 @@ use defmt::*;
 use defmt_rtt as _;
 use embassy_executor::Spawner;
 use embassy_stm32::bind_interrupts;
-use embassy_stm32::exti::ExtiInput;
-use embassy_stm32::gpio::{Level, Output, Pull, Speed};
+
+use embassy_stm32::gpio::{Input, Pull};
 use embassy_usb::class::hid::{HidReaderWriter, State};
 use embassy_usb::Builder;
 use futures::future::join;
 use panic_probe as _;
-use usbd_hid::descriptor::KeyboardReport;
 
+use cantor36_rs::keys::matrix_scanner;
 use cantor36_rs::{
     hid_config, init_device, stm32_usb_config, usb_config, DeviceHandler, HidRequestHandler,
 };
@@ -107,49 +107,39 @@ async fn main(_spawner: Spawner) {
 
     let (reader, mut writer) = hid.split();
 
-    let mut button = ExtiInput::new(p.PA0, p.EXTI0, Pull::Up);
-    let mut led = Output::new(p.PC13, Level::High, Speed::Low);
-
-    // Do stuff with the class!
-    let in_fut = async {
-        loop {
-            button.wait_for_falling_edge().await;
-            info!("Button pressed!");
-            // Create a report with the A key pressed. (no shift modifier)
-            let report = KeyboardReport {
-                keycodes: [4, 0, 0, 0, 0, 0],
-                leds: 0,
-                modifier: 0,
-                reserved: 0,
-            };
-            // Send the report.
-            match writer.write_serialize(&report).await {
-                Ok(()) => {}
-                Err(e) => warn!("Failed to send report: {:?}", e),
-            };
-            led.set_low();
-
-            button.wait_for_rising_edge().await;
-            info!("Button released!");
-            let report = KeyboardReport {
-                keycodes: [0, 0, 0, 0, 0, 0],
-                leds: 0,
-                modifier: 0,
-                reserved: 0,
-            };
-            match writer.write_serialize(&report).await {
-                Ok(()) => {}
-                Err(e) => warn!("Failed to send report: {:?}", e),
-            };
-            led.set_high();
-        }
-    };
-
-    let out_fut = async {
-        reader.run(false, &request_handler).await;
-    };
+    let matrix = [
+        [
+            Some(Input::new(p.PB10, Pull::Up)),
+            Some(Input::new(p.PA8, Pull::Up)),
+            Some(Input::new(p.PB15, Pull::Up)),
+            Some(Input::new(p.PB14, Pull::Up)),
+            Some(Input::new(p.PB13, Pull::Up)),
+        ],
+        [
+            Some(Input::new(p.PB8, Pull::Up)),
+            Some(Input::new(p.PB5, Pull::Up)),
+            Some(Input::new(p.PB4, Pull::Up)),
+            Some(Input::new(p.PB3, Pull::Up)),
+            Some(Input::new(p.PA15, Pull::Up)),
+        ],
+        [
+            Some(Input::new(p.PA4, Pull::Up)),
+            Some(Input::new(p.PA5, Pull::Up)),
+            Some(Input::new(p.PA6, Pull::Up)),
+            Some(Input::new(p.PA7, Pull::Up)),
+            Some(Input::new(p.PB0, Pull::Up)),
+        ],
+        [
+            None,
+            None,
+            Some(Input::new(p.PA2, Pull::Up)),
+            Some(Input::new(p.PA1, Pull::Up)),
+            Some(Input::new(p.PA0, Pull::Up)),
+        ],
+    ];
+    let matrix_fut = matrix_scanner(matrix);
 
     // Run everything concurrently.
     // If we had made everything `'static` above instead, we could do this using separate tasks instead.
-    join(usb_fut, join(in_fut, out_fut)).await;
+    join(usb_fut, matrix_fut).await;
 }
