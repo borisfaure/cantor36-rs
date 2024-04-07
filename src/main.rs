@@ -9,11 +9,12 @@ use defmt::*;
 use defmt_rtt as _;
 use embassy_executor::Spawner;
 use embassy_stm32::bind_interrupts;
-
 use embassy_stm32::gpio::{Input, Pull};
 use embassy_usb::class::hid::{HidReaderWriter, State};
 use embassy_usb::Builder;
-use futures::future::join;
+
+use crate::hid::hid_writer_handler;
+use futures::future;
 use panic_probe as _;
 
 /// Configuration
@@ -22,6 +23,20 @@ mod config;
 mod hid;
 /// Key handling
 mod keys;
+/// Layout events processing
+mod layout;
+
+/// Basic layout for the keyboard
+#[cfg(feature = "keymap_basic")]
+mod keymap_basic;
+
+/// Keymap by Boris Faure
+#[cfg(feature = "keymap_borisfaure")]
+mod keymap_borisfaure;
+
+/// Test layout for the keyboard
+#[cfg(feature = "keymap_test")]
+mod keymap_test;
 
 #[cfg(not(any(feature = "right", feature = "left",)))]
 compile_error!("Either feature \"right\" or \"left\" must be enabled.");
@@ -35,24 +50,6 @@ compile_error!(
     "Either feature \"keymap_basic\" or \"keymap_borisfaure\" or \"keymap_test\" must be enabled."
 );
 
-/// Basic layout for the keyboard
-#[cfg(feature = "keymap_basic")]
-mod keymap_basic;
-#[cfg(feature = "keymap_basic")]
-use keymap_basic::{KBLayout, LAYERS};
-
-/// Keymap by Boris Faure
-//#[cfg(feature = "keymap_borisfaure")]
-//mod keymap_borisfaure;
-//#[cfg(feature = "keymap_borisfaure")]
-//use keymap_borisfaure::{KBLayout, LAYERS};
-
-/// Test layout for the keyboard
-#[cfg(feature = "keymap_test")]
-mod keymap_test;
-#[cfg(feature = "keymap_test")]
-use keymap_test::{KBLayout, LAYERS};
-
 bind_interrupts!(struct Irqs {
     OTG_FS => embassy_stm32::usb::InterruptHandler<embassy_stm32::peripherals::USB_OTG_FS>;
 });
@@ -60,7 +57,6 @@ bind_interrupts!(struct Irqs {
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
     let p = config::init_device();
-    info!("Hello World!");
 
     // Create the driver, from the HAL.
     let mut ep_out_buffer = [0u8; 256];
@@ -102,7 +98,7 @@ async fn main(_spawner: Spawner) {
 
     // Create classes on the builder.
     let hid_config = config::hid_config(&request_handler);
-    let hid = HidReaderWriter::<_, 1, 8>::new(&mut builder, &mut state, hid_config);
+    let hid = HidReaderWriter::<_, 64, 64>::new(&mut builder, &mut state, hid_config);
 
     // Build the builder.
     let mut usb = builder.build();
@@ -110,7 +106,11 @@ async fn main(_spawner: Spawner) {
     // Run the USB device.
     let usb_fut = usb.run();
 
-    let (reader, mut writer) = hid.split();
+    let (hid_reader, hid_writer) = hid.split();
+    let hid_reader_fut = async {
+        hid_reader.run(false, &request_handler).await;
+    };
+    let hid_writer_fut = hid_writer_handler(hid_writer);
 
     let matrix = [
         [
@@ -144,7 +144,17 @@ async fn main(_spawner: Spawner) {
     ];
     let matrix_fut = keys::matrix_scanner(matrix);
 
+    let layout_fut = layout::layout_handler();
+
     // Run everything concurrently.
     // If we had made everything `'static` above instead, we could do this using separate tasks instead.
-    join(usb_fut, matrix_fut).await;
+
+    future::join5(
+        usb_fut,
+        hid_reader_fut,
+        hid_writer_fut,
+        matrix_fut,
+        layout_fut,
+    )
+    .await;
 }

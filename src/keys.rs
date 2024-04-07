@@ -1,4 +1,4 @@
-use defmt::*;
+use crate::layout::LAYOUT_CHANNEL;
 use embassy_stm32::gpio::Input;
 use embassy_time::{Duration, Ticker};
 use keyberon::debounce::Debouncer;
@@ -58,12 +58,11 @@ pub async fn matrix_scanner(matrix: Matrix<'_>) {
     let mut debouncer = Debouncer::new(matrix_state_new(), matrix_state_new(), NB_BOUNCE);
 
     loop {
-        scan_matrix(&matrix);
         for event in debouncer
             .events(scan_matrix(&matrix))
             .map(transform_keypress_coordinates)
         {
-            info!("{:?}", defmt::Debug2Format(&event));
+            LAYOUT_CHANNEL.send(event).await;
         }
 
         ticker.next().await;
