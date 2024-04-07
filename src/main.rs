@@ -16,10 +16,15 @@ use embassy_usb::Builder;
 use futures::future::join;
 use panic_probe as _;
 
-use cantor36_rs::keys::matrix_scanner;
-use cantor36_rs::{
-    hid_config, init_device, stm32_usb_config, usb_config, DeviceHandler, HidRequestHandler,
-};
+/// Configuration
+mod config;
+/// USB HID configuration
+mod hid;
+/// Key handling
+mod keys;
+
+#[cfg(not(any(feature = "right", feature = "left",)))]
+compile_error!("Either feature \"right\" or \"left\" must be enabled.");
 
 #[cfg(not(any(
     feature = "keymap_borisfaure",
@@ -54,7 +59,7 @@ bind_interrupts!(struct Irqs {
 
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
-    let p = init_device();
+    let p = config::init_device();
     info!("Hello World!");
 
     // Create the driver, from the HAL.
@@ -65,11 +70,11 @@ async fn main(_spawner: Spawner) {
         p.PA12,
         p.PA11,
         &mut ep_out_buffer,
-        stm32_usb_config(),
+        config::stm32_usb_config(),
     );
 
     // Create embassy-usb Config
-    let usb_config = usb_config();
+    let usb_config = config::usb_config();
 
     // Create embassy-usb DeviceBuilder using the driver and config.
     // It needs some buffers for building the descriptors.
@@ -79,8 +84,8 @@ async fn main(_spawner: Spawner) {
     let mut msos_descriptor = [0; 256];
     let mut control_buf = [0; 64];
 
-    let request_handler = HidRequestHandler::new();
-    let mut device_handler = DeviceHandler::new();
+    let request_handler = hid::HidRequestHandler::new();
+    let mut device_handler = hid::DeviceHandler::new();
 
     let mut state = State::new();
 
@@ -96,7 +101,7 @@ async fn main(_spawner: Spawner) {
     builder.handler(&mut device_handler);
 
     // Create classes on the builder.
-    let hid_config = hid_config(&request_handler);
+    let hid_config = config::hid_config(&request_handler);
     let hid = HidReaderWriter::<_, 1, 8>::new(&mut builder, &mut state, hid_config);
 
     // Build the builder.
@@ -137,7 +142,7 @@ async fn main(_spawner: Spawner) {
             Some(Input::new(p.PA0, Pull::Up)),
         ],
     ];
-    let matrix_fut = matrix_scanner(matrix);
+    let matrix_fut = keys::matrix_scanner(matrix);
 
     // Run everything concurrently.
     // If we had made everything `'static` above instead, we could do this using separate tasks instead.

@@ -11,7 +11,6 @@ keymap_test = []
 right = []
 left = []
 default = ["left", "keymap_borisfaure"]
-#default = ["left","keymap_borisfaure"]
 
 [dependencies]
 embassy-stm32 = { git = "https://github.com/embassy-rs/embassy", features = ["defmt", "stm32f401cd", "unstable-pac", "memory-x", "time-driver-any", "exti", "chrono"]  }
@@ -19,6 +18,8 @@ embassy-sync = { git = "https://github.com/embassy-rs/embassy", features = ["def
 embassy-executor = { git = "https://github.com/embassy-rs/embassy", features = ["task-arena-size-32768", "arch-cortex-m", "executor-thread", "executor-interrupt", "defmt", "integrated-timers"] }
 embassy-time = { git = "https://github.com/embassy-rs/embassy", features = ["defmt", "defmt-timestamp-uptime", "tick-hz-32_768"] }
 embassy-usb = { git = "https://github.com/embassy-rs/embassy", features = ["defmt" ] }
+
+keyberon = { git = "https://github.com/borisfaure/keyberon", branch = "shifted_seq" }
 
 defmt = "0.3"
 defmt-rtt = "0.4"
