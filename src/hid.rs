@@ -6,11 +6,10 @@ use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
 use embassy_usb::class::hid::{ReportId, RequestHandler};
 use embassy_usb::control::OutResponse;
 use embassy_usb::Handler;
-use keyberon::key_code::KbHidReport;
 use usbd_hid::descriptor::KeyboardReport;
 
 const NB_REPORTS: usize = 1;
-pub static HID_CHANNEL: Channel<ThreadModeRawMutex, KbHidReport, NB_REPORTS> = Channel::new();
+pub static HID_CHANNEL: Channel<ThreadModeRawMutex, KeyboardReport, NB_REPORTS> = Channel::new();
 
 pub type HidWriter<'a, 'b> = embassy_usb::class::hid::HidWriter<'a, Driver<'b, USB_OTG_FS>, 64>;
 
@@ -44,20 +43,10 @@ impl RequestHandler for HidRequestHandler {
     }
 }
 
-fn convert_report(_kbhr: KbHidReport) -> KeyboardReport {
-    KeyboardReport {
-        keycodes: [4, 0, 0, 0, 0, 0],
-        leds: 0,
-        modifier: 0,
-        reserved: 0,
-    }
-}
-
 /// Loop to read HID reports from the HID channel and send them to the HID writer
 pub async fn hid_writer_handler<'a>(mut writer: HidWriter<'a, 'a>) {
     loop {
-        let report = HID_CHANNEL.receive().await;
-        let hid_report: KeyboardReport = convert_report(report);
+        let hid_report = HID_CHANNEL.receive().await;
         match writer.write_serialize(&hid_report).await {
             Ok(()) => {}
             Err(e) => warn!("Failed to send report: {:?}", e),
