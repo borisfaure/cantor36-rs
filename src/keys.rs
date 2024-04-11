@@ -24,6 +24,7 @@ fn matrix_state_new() -> MatrixState {
     [[false; COLS]; ROWS]
 }
 
+/// Scan the keyboard matrix
 fn scan_matrix(matrix: &Matrix) -> MatrixState {
     let mut matrix_state = matrix_state_new();
     for row in 0..ROWS {

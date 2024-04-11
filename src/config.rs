@@ -2,8 +2,6 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 use embassy_stm32::Peripherals;
-use embassy_usb::class::hid::RequestHandler;
-use usbd_hid::descriptor::{KeyboardReport, SerializedDescriptor};
 
 /// USB VID based on
 /// <https://github.com/obdev/v-usb/blob/master/usbdrv/USB-IDs-for-free.txt>
@@ -70,16 +68,4 @@ pub fn usb_config() -> embassy_usb::Config<'static> {
     config.device_protocol = 0x01;
     config.composite_with_iads = true;
     config
-}
-
-/// Generate HID config
-pub fn hid_config<'a>(
-    request_handler: &'a dyn RequestHandler,
-) -> embassy_usb::class::hid::Config<'a> {
-    embassy_usb::class::hid::Config {
-        report_descriptor: KeyboardReport::desc(),
-        request_handler: Some(request_handler),
-        poll_ms: 60,
-        max_packet_size: 8,
-    }
 }

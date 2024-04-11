@@ -97,7 +97,7 @@ async fn main(_spawner: Spawner) {
     builder.handler(&mut device_handler);
 
     // Create classes on the builder.
-    let hid_config = config::hid_config(&request_handler);
+    let hid_config = hid::config(&request_handler);
     let hid = HidReaderWriter::<_, 64, 64>::new(&mut builder, &mut state, hid_config);
 
     // Build the builder.

@@ -6,11 +6,14 @@ use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
 use embassy_usb::class::hid::{ReportId, RequestHandler};
 use embassy_usb::control::OutResponse;
 use embassy_usb::Handler;
-use usbd_hid::descriptor::KeyboardReport;
+use usbd_hid::descriptor::{KeyboardReport, SerializedDescriptor};
 
+/// Only one report is sent at a time
 const NB_REPORTS: usize = 1;
+/// Channel to send HID reports to the HID writer
 pub static HID_CHANNEL: Channel<ThreadModeRawMutex, KeyboardReport, NB_REPORTS> = Channel::new();
 
+/// HID writer type
 pub type HidWriter<'a, 'b> = embassy_usb::class::hid::HidWriter<'a, Driver<'b, USB_OTG_FS>, 64>;
 
 /// HID handler
@@ -19,6 +22,16 @@ impl HidRequestHandler {
     /// Create a new HID request handler
     pub fn new() -> Self {
         HidRequestHandler {}
+    }
+}
+
+/// Generate HID config
+pub fn config(request_handler: &dyn RequestHandler) -> embassy_usb::class::hid::Config {
+    embassy_usb::class::hid::Config {
+        report_descriptor: KeyboardReport::desc(),
+        request_handler: Some(request_handler),
+        poll_ms: 60,
+        max_packet_size: 8,
     }
 }
 
@@ -56,6 +69,7 @@ pub async fn hid_writer_handler<'a>(mut writer: HidWriter<'a, 'a>) {
 
 /// Device Handler, used to know when it's configured
 pub struct DeviceHandler {
+    /// Device configured flag
     configured: AtomicBool,
 }
 
