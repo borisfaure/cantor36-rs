@@ -87,7 +87,6 @@ async fn main(_spawner: Spawner) {
     let mut msos_descriptor = [0; 256];
     let mut control_buf = [0; 64];
 
-    let request_handler = MyRequestHandler {};
     let mut device_handler = MyDeviceHandler::new();
 
     let mut state = State::new();
@@ -106,7 +105,7 @@ async fn main(_spawner: Spawner) {
     // Create classes on the builder.
     let config = embassy_usb::class::hid::Config {
         report_descriptor: KeyboardReport::desc(),
-        request_handler: Some(&request_handler),
+        request_handler: None,
         poll_ms: 60,
         max_packet_size: 8,
     };
@@ -131,7 +130,7 @@ async fn main(_spawner: Spawner) {
             info!("Button pressed!");
             // Create a report with the A key pressed. (no shift modifier)
             let report = KeyboardReport {
-                keycodes: [4, 0, 0, 0, 0, 0],
+                keycodes: [keyberon::key_code::KeyCode::A as u8, 0, 0, 0, 0, 0],
                 leds: 0,
                 modifier: 0,
                 reserved: 0,
@@ -159,8 +158,9 @@ async fn main(_spawner: Spawner) {
         }
     };
 
+    let mut request_handler = MyRequestHandler {};
     let out_fut = async {
-        reader.run(false, &request_handler).await;
+        reader.run(false, &mut request_handler).await;
     };
 
     // Run everything concurrently.
@@ -176,8 +176,13 @@ impl RequestHandler for MyRequestHandler {
         None
     }
 
-    fn set_report(&self, id: ReportId, data: &[u8]) -> OutResponse {
-        info!("Set report for {:?}: {=[u8]}", id, data);
+    fn set_report(&mut self, id: ReportId, data: &[u8]) -> OutResponse {
+        info!(
+            "Set report for {:?}: {=[u8]} (len:{})",
+            id,
+            data,
+            data.len()
+        );
         OutResponse::Accepted
     }
 

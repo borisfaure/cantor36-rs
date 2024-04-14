@@ -12,6 +12,7 @@ use embassy_stm32::bind_interrupts;
 use embassy_stm32::gpio::{Input, Pull};
 use embassy_usb::class::hid::{HidReaderWriter, State};
 use embassy_usb::Builder;
+use usbd_hid::descriptor::{KeyboardReport, SerializedDescriptor};
 
 use crate::hid::hid_writer_handler;
 use futures::future;
@@ -55,7 +56,7 @@ bind_interrupts!(struct Irqs {
 });
 
 #[embassy_executor::main]
-async fn main(_spawner: Spawner) {
+async fn main(spawner: Spawner) {
     let p = config::init_device();
 
     // Create the driver, from the HAL.
@@ -80,7 +81,6 @@ async fn main(_spawner: Spawner) {
     let mut msos_descriptor = [0; 256];
     let mut control_buf = [0; 64];
 
-    let request_handler = hid::HidRequestHandler::new();
     let mut device_handler = hid::DeviceHandler::new();
 
     let mut state = State::new();
@@ -97,7 +97,12 @@ async fn main(_spawner: Spawner) {
     builder.handler(&mut device_handler);
 
     // Create classes on the builder.
-    let hid_config = hid::config(&request_handler);
+    let hid_config = embassy_usb::class::hid::Config {
+        report_descriptor: KeyboardReport::desc(),
+        request_handler: None,
+        poll_ms: 60,
+        max_packet_size: 8,
+    };
     let hid = HidReaderWriter::<_, 64, 64>::new(&mut builder, &mut state, hid_config);
 
     // Build the builder.
@@ -106,9 +111,10 @@ async fn main(_spawner: Spawner) {
     // Run the USB device.
     let usb_fut = usb.run();
 
+    let mut request_handler = hid::HidRequestHandler::new(&spawner);
     let (hid_reader, hid_writer) = hid.split();
     let hid_reader_fut = async {
-        hid_reader.run(false, &request_handler).await;
+        hid_reader.run(false, &mut request_handler).await;
     };
     let hid_writer_fut = hid_writer_handler(hid_writer);
 

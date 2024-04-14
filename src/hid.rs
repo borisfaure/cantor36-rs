@@ -1,12 +1,14 @@
+use crate::layout::LAYOUT_CHANNEL;
 use core::sync::atomic::{AtomicBool, Ordering};
 use defmt::*;
+use embassy_executor::Spawner;
 use embassy_stm32::peripherals::USB_OTG_FS;
 use embassy_stm32::usb::Driver;
 use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
 use embassy_usb::class::hid::{ReportId, RequestHandler};
 use embassy_usb::control::OutResponse;
 use embassy_usb::Handler;
-use usbd_hid::descriptor::{KeyboardReport, SerializedDescriptor};
+use usbd_hid::descriptor::KeyboardReport;
 
 /// Only one report is sent at a time
 const NB_REPORTS: usize = 1;
@@ -17,32 +19,37 @@ pub static HID_CHANNEL: Channel<ThreadModeRawMutex, KeyboardReport, NB_REPORTS> 
 pub type HidWriter<'a, 'b> = embassy_usb::class::hid::HidWriter<'a, Driver<'b, USB_OTG_FS>, 64>;
 
 /// HID handler
-pub struct HidRequestHandler {}
-impl HidRequestHandler {
+pub struct HidRequestHandler<'a> {
+    /// Spawner
+    spawner: &'a Spawner,
+    /// Num lock state
+    num_lock: bool,
+    /// Caps lock state
+    caps_lock: bool,
+}
+impl<'a> HidRequestHandler<'a> {
     /// Create a new HID request handler
-    pub fn new() -> Self {
-        HidRequestHandler {}
+    pub fn new(spawner: &'a Spawner) -> Self {
+        HidRequestHandler {
+            spawner,
+            num_lock: false,
+            caps_lock: false,
+        }
     }
 }
 
-/// Generate HID config
-pub fn config(request_handler: &dyn RequestHandler) -> embassy_usb::class::hid::Config {
-    embassy_usb::class::hid::Config {
-        report_descriptor: KeyboardReport::desc(),
-        request_handler: Some(request_handler),
-        poll_ms: 60,
-        max_packet_size: 8,
-    }
-}
-
-impl RequestHandler for HidRequestHandler {
+impl RequestHandler for HidRequestHandler<'_> {
     fn get_report(&self, id: ReportId, _buf: &mut [u8]) -> Option<usize> {
         info!("Get report for {:?}", id);
         None
     }
 
-    fn set_report(&self, id: ReportId, data: &[u8]) -> OutResponse {
+    fn set_report(&mut self, id: ReportId, data: &[u8]) -> OutResponse {
         info!("Set report for {:?}: {=[u8]}", id, data);
+        if let ReportId::Out(0) = id {
+            self.num_lock(data[0] & 1 != 0);
+            self.caps_lock(data[0] & 1 << 1 != 0);
+        }
         OutResponse::Accepted
     }
 
@@ -53,6 +60,46 @@ impl RequestHandler for HidRequestHandler {
     fn get_idle_ms(&self, id: Option<ReportId>) -> Option<u32> {
         info!("Get idle rate for {:?}", id);
         None
+    }
+}
+
+#[embassy_executor::task]
+async fn caps_lock_change() {
+    // send a key press and release event for the CapsLock key so that
+    // the keymap can do something with it, like changing the default layer
+    LAYOUT_CHANNEL
+        .send(keyberon::layout::Event::Press(3, 0))
+        .await;
+    LAYOUT_CHANNEL
+        .send(keyberon::layout::Event::Release(3, 0))
+        .await;
+}
+#[embassy_executor::task]
+async fn num_lock_change() {
+    // send a key press and release event for the NumLock key so that
+    // the keymap can do something with it, like changing the default layer
+    LAYOUT_CHANNEL
+        .send(keyberon::layout::Event::Press(3, 1))
+        .await;
+    LAYOUT_CHANNEL
+        .send(keyberon::layout::Event::Release(3, 1))
+        .await;
+}
+
+impl HidRequestHandler<'_> {
+    /// Set the caps lock state. May not have changed.
+    fn caps_lock(&mut self, caps_lock: bool) {
+        if self.caps_lock != caps_lock {
+            self.caps_lock = caps_lock;
+            self.spawner.must_spawn(caps_lock_change());
+        }
+    }
+    /// Set the num lock state. May not have changed.
+    fn num_lock(&mut self, num_lock: bool) {
+        if self.num_lock != num_lock {
+            self.num_lock = num_lock;
+            self.spawner.must_spawn(num_lock_change());
+        }
     }
 }
 
