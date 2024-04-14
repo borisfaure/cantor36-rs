@@ -1,5 +1,4 @@
 use crate::layout::LAYOUT_CHANNEL;
-use core::sync::atomic::{AtomicBool, Ordering};
 use defmt::*;
 use embassy_executor::Spawner;
 use embassy_stm32::peripherals::USB_OTG_FS;
@@ -7,7 +6,6 @@ use embassy_stm32::usb::Driver;
 use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
 use embassy_usb::class::hid::{ReportId, RequestHandler};
 use embassy_usb::control::OutResponse;
-use embassy_usb::Handler;
 use usbd_hid::descriptor::KeyboardReport;
 
 /// Only one report is sent at a time
@@ -111,52 +109,5 @@ pub async fn hid_writer_handler<'a>(mut writer: HidWriter<'a, 'a>) {
             Ok(()) => {}
             Err(e) => warn!("Failed to send report: {:?}", e),
         };
-    }
-}
-
-/// Device Handler, used to know when it's configured
-pub struct DeviceHandler {
-    /// Device configured flag
-    configured: AtomicBool,
-}
-
-impl DeviceHandler {
-    /// Create a new Device Handler
-    pub fn new() -> Self {
-        DeviceHandler {
-            configured: AtomicBool::new(false),
-        }
-    }
-}
-
-impl Handler for DeviceHandler {
-    fn enabled(&mut self, enabled: bool) {
-        self.configured.store(false, Ordering::Relaxed);
-        if enabled {
-            info!("Device enabled");
-        } else {
-            info!("Device disabled");
-        }
-    }
-
-    fn reset(&mut self) {
-        self.configured.store(false, Ordering::Relaxed);
-        info!("Bus reset, the Vbus current limit is 100mA");
-    }
-
-    fn addressed(&mut self, addr: u8) {
-        self.configured.store(false, Ordering::Relaxed);
-        info!("USB address set to: {}", addr);
-    }
-
-    fn configured(&mut self, configured: bool) {
-        self.configured.store(configured, Ordering::Relaxed);
-        if configured {
-            info!(
-                "Device configured, it may now draw up to the configured current limit from Vbus."
-            )
-        } else {
-            info!("Device is no longer configured, the Vbus current limit is 100mA.");
-        }
     }
 }

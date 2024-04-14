@@ -26,6 +26,8 @@ mod hid;
 mod keys;
 /// Layout events processing
 mod layout;
+/// Handling the other half of the keyboard
+mod side;
 
 /// Basic layout for the keyboard
 #[cfg(feature = "keymap_basic")]
@@ -81,7 +83,7 @@ async fn main(spawner: Spawner) {
     let mut msos_descriptor = [0; 256];
     let mut control_buf = [0; 64];
 
-    let mut device_handler = hid::DeviceHandler::new();
+    let mut device_handler = side::DeviceHandler::new();
 
     let mut state = State::new();
 
