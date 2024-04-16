@@ -1,7 +1,6 @@
 use crate::hid::HID_CHANNEL;
 use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
-use keyberon::layout::Event;
-use keyberon::layout::Layout;
+use keyberon::layout::{Event, Layout};
 use usbd_hid::descriptor::KeyboardReport;
 
 /// Basic layout for the keyboard

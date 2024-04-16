@@ -10,11 +10,13 @@ use defmt_rtt as _;
 use embassy_executor::Spawner;
 use embassy_stm32::bind_interrupts;
 use embassy_stm32::gpio::{Input, Pull};
+use embassy_stm32::usart;
 use embassy_usb::class::hid::{HidReaderWriter, State};
 use embassy_usb::Builder;
 use usbd_hid::descriptor::{KeyboardReport, SerializedDescriptor};
 
 use crate::hid::hid_writer_handler;
+use crate::side::{SERIAL_BUF_SIZE, USART_BAUDRATE};
 use futures::future;
 use panic_probe as _;
 
@@ -55,6 +57,7 @@ compile_error!(
 
 bind_interrupts!(struct Irqs {
     OTG_FS => embassy_stm32::usb::InterruptHandler<embassy_stm32::peripherals::USB_OTG_FS>;
+    USART1 => usart::BufferedInterruptHandler<embassy_stm32::peripherals::USART1>;
 });
 
 #[embassy_executor::main]
@@ -154,13 +157,30 @@ async fn main(spawner: Spawner) {
 
     let layout_fut = layout::layout_handler();
 
+    let mut tx_buf = [0u8; SERIAL_BUF_SIZE];
+    let mut rx_buf = [0u8; SERIAL_BUF_SIZE];
+    let mut usart_config = usart::Config::default();
+    usart_config.baudrate = USART_BAUDRATE;
+    let buf_usart = usart::BufferedUart::new(
+        p.USART1,
+        Irqs,
+        p.PB7,
+        p.PB6,
+        &mut tx_buf,
+        &mut rx_buf,
+        usart_config,
+    )
+    .unwrap();
+    let (usart_writer, usart_reader) = buf_usart.split();
+    let usart_rx_fut = side::usart_rx(usart_reader);
+    let usart_tx_fut = side::usart_tx(usart_writer);
+
     // Run everything concurrently.
     // If we had made everything `'static` above instead, we could do this using separate tasks instead.
 
-    future::join5(
-        usb_fut,
-        hid_reader_fut,
-        hid_writer_fut,
+    future::join4(
+        future::join3(usb_fut, usart_rx_fut, usart_tx_fut),
+        future::join(hid_reader_fut, hid_writer_fut),
         matrix_fut,
         layout_fut,
     )

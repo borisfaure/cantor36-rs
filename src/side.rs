@@ -1,6 +1,67 @@
+use crate::layout::LAYOUT_CHANNEL;
 use core::sync::atomic::{AtomicBool, Ordering};
 use defmt::*;
+use embassy_stm32::peripherals::USART1;
+use embassy_stm32::usart::{BufferedUartRx, BufferedUartTx};
+use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
 use embassy_usb::Handler;
+use embedded_io_async::{Read, Write};
+use keyberon::layout::Event;
+
+/// Number of events in the layout channel
+const NB_EVENTS: usize = 8;
+/// Channel to send `keyberon::layout::event` events to the layout handler
+pub static SIDE_CHANNEL: Channel<ThreadModeRawMutex, Event, NB_EVENTS> = Channel::new();
+
+/// Serialized size of a key event
+pub const SERIALIZED_SIZE: usize = 4;
+/// Buffer size for serialized key events
+pub const SERIAL_BUF_SIZE: usize = 8 * SERIALIZED_SIZE;
+/// USART baudrate
+pub const USART_BAUDRATE: u32 = 38_400;
+
+/// Deserialize a key event from the serial line
+fn deserialize(bytes: &[u8; SERIALIZED_SIZE]) -> Result<Event, ()> {
+    match *bytes {
+        [b'P', i, j, b'\n'] => Ok(Event::Press(i, j)),
+        [b'R', i, j, b'\n'] => Ok(Event::Release(i, j)),
+        _ => Err(()),
+    }
+}
+
+/// Serialize a key event
+fn serialize(e: Event) -> [u8; SERIALIZED_SIZE] {
+    match e {
+        Event::Press(i, j) => [b'P', i, j, b'\n'],
+        Event::Release(i, j) => [b'R', i, j, b'\n'],
+    }
+}
+
+/// Receive key events from the other half of the keyboard
+pub async fn usart_rx(mut buf_usart: BufferedUartRx<'_, USART1>) {
+    loop {
+        let mut buf: [u8; SERIALIZED_SIZE] = [0; SERIALIZED_SIZE];
+        buf_usart.read_exact(&mut buf).await.unwrap();
+        match deserialize(&buf) {
+            Ok(event) => {
+                LAYOUT_CHANNEL.send(event).await;
+            }
+            Err(()) => {
+                warn!("Invalid event received: {:?}", buf);
+            }
+        }
+    }
+}
+
+/// Send key events to the other half of the keyboard
+pub async fn usart_tx(mut buf_usart: BufferedUartTx<'_, USART1>) {
+    loop {
+        let event = SIDE_CHANNEL.receive().await;
+        let buf = serialize(event);
+        buf_usart.write_all(&buf).await.unwrap();
+        buf_usart.flush().await.unwrap();
+    }
+}
 
 /// Device configured flag
 static CONFIGURED: AtomicBool = AtomicBool::new(false);

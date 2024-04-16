@@ -1,5 +1,5 @@
 use crate::layout::LAYOUT_CHANNEL;
-use crate::side::is_host;
+use crate::side::{is_host, SIDE_CHANNEL};
 use embassy_stm32::gpio::Input;
 use embassy_time::{Duration, Ticker};
 use keyberon::debounce::Debouncer;
@@ -65,9 +65,12 @@ pub async fn matrix_scanner(matrix: Matrix<'_>) {
             .events(scan_matrix(&matrix))
             .map(transform_keypress_coordinates)
         {
-            if is_host {
-                LAYOUT_CHANNEL.send(event).await;
-            }
+            let channel = if is_host {
+                &LAYOUT_CHANNEL
+            } else {
+                &SIDE_CHANNEL
+            };
+            channel.send(event).await;
         }
 
         ticker.next().await;
