@@ -18,11 +18,13 @@ embassy-sync = {     git = "https://github.com/borisfaure/embassy", branch="mut-
 embassy-executor = { git = "https://github.com/borisfaure/embassy", branch="mut-hid-request-handler", features = ["task-arena-size-32768", "arch-cortex-m", "executor-thread", "executor-interrupt", "defmt", "integrated-timers"] }
 embassy-time = {     git = "https://github.com/borisfaure/embassy", branch="mut-hid-request-handler", features = ["defmt", "defmt-timestamp-uptime", "tick-hz-32_768"] }
 embassy-usb = {      git = "https://github.com/borisfaure/embassy", branch="mut-hid-request-handler", features = ["defmt" ] }
+embassy-futures = {  git = "https://github.com/borisfaure/embassy", branch="mut-hid-request-handler"}
 #embassy-stm32 = { git = "https://github.com/embassy-rs/embassy", features = ["defmt", "stm32f401cd", "unstable-pac", "memory-x", "time-driver-any", "exti", "chrono"]  }
 #embassy-sync = { git = "https://github.com/embassy-rs/embassy", features = ["defmt"] }
 #embassy-executor = { git = "https://github.com/embassy-rs/embassy", features = ["task-arena-size-32768", "arch-cortex-m", "executor-thread", "executor-interrupt", "defmt", "integrated-timers"] }
 #embassy-time = { git = "https://github.com/embassy-rs/embassy", features = ["defmt", "defmt-timestamp-uptime", "tick-hz-32_768"] }
 #embassy-usb = { git = "https://github.com/embassy-rs/embassy", features = ["defmt" ] }
+#embassy-futures = { git = "https://github.com/emabssy-rs/embassy"}
 
 keyberon = { git = "https://github.com/borisfaure/keyberon", branch = "shifted_seq" }
 
