@@ -1,4 +1,5 @@
 use crate::layout::LAYOUT_CHANNEL;
+use crate::side::is_host;
 use defmt::*;
 use embassy_executor::Spawner;
 use embassy_stm32::peripherals::USB_OTG_FS;
@@ -106,9 +107,11 @@ impl HidRequestHandler<'_> {
 pub async fn hid_writer_handler<'a>(mut writer: HidWriter<'a, 'a>) {
     loop {
         let hid_report = HID_CHANNEL.receive().await;
-        match writer.write_serialize(&hid_report).await {
-            Ok(()) => {}
-            Err(e) => warn!("Failed to send report: {:?}", e),
-        };
+        if is_host() {
+            match writer.write_serialize(&hid_report).await {
+                Ok(()) => {}
+                Err(e) => warn!("Failed to send report: {:?}", e),
+            };
+        }
     }
 }
