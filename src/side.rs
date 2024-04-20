@@ -3,15 +3,15 @@ use core::sync::atomic::{AtomicBool, Ordering};
 use defmt::*;
 use embassy_stm32::peripherals::USART1;
 use embassy_stm32::usart::{BufferedUartRx, BufferedUartTx};
-use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
+use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, channel::Channel};
 use embassy_usb::Handler;
 use embedded_io_async::{Read, Write};
 use keyberon::layout::Event;
 
-/// Number of events in the layout channel
+/// Number of events in the channel to the other half of the keyboard
 const NB_EVENTS: usize = 8;
 /// Channel to send `keyberon::layout::event` events to the layout handler
-pub static SIDE_CHANNEL: Channel<ThreadModeRawMutex, Event, NB_EVENTS> = Channel::new();
+pub static SIDE_CHANNEL: Channel<CriticalSectionRawMutex, Event, NB_EVENTS> = Channel::new();
 
 /// Serialized size of a key event
 pub const SERIALIZED_SIZE: usize = 4;

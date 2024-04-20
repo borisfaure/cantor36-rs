@@ -1,5 +1,5 @@
 use crate::hid::HID_CHANNEL;
-use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
+use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, channel::Channel};
 use keyberon::layout::{Event, Layout};
 use usbd_hid::descriptor::KeyboardReport;
 
@@ -18,7 +18,7 @@ use crate::keymap_test::{KBLayout, LAYERS};
 /// Number of events in the layout channel
 const NB_EVENTS: usize = 8;
 /// Channel to send `keyberon::layout::event` events to the layout handler
-pub static LAYOUT_CHANNEL: Channel<ThreadModeRawMutex, Event, NB_EVENTS> = Channel::new();
+pub static LAYOUT_CHANNEL: Channel<CriticalSectionRawMutex, Event, NB_EVENTS> = Channel::new();
 
 /// Set a report as an error based on keycode `kc`
 fn keyboard_report_set_error(report: &mut KeyboardReport, kc: keyberon::key_code::KeyCode) {
