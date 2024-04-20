@@ -65,12 +65,11 @@ pub async fn matrix_scanner(matrix: Matrix<'_>) {
             .events(scan_matrix(&matrix))
             .map(transform_keypress_coordinates)
         {
-            let channel = if is_host {
-                &LAYOUT_CHANNEL
+            if is_host {
+                LAYOUT_CHANNEL.send(event).await;
             } else {
-                &SIDE_CHANNEL
+                SIDE_CHANNEL.send(event).await;
             };
-            channel.send(event).await;
         }
 
         ticker.next().await;
