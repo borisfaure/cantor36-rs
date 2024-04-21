@@ -10,7 +10,7 @@ use embassy_usb::control::OutResponse;
 use usbd_hid::descriptor::KeyboardReport;
 
 /// Only one report is sent at a time
-const NB_REPORTS: usize = 1;
+const NB_REPORTS: usize = 64;
 /// Channel to send HID reports to the HID writer
 pub static HID_CHANNEL: Channel<CriticalSectionRawMutex, KeyboardReport, NB_REPORTS> =
     Channel::new();
@@ -111,7 +111,7 @@ pub async fn hid_writer_handler<'a>(mut writer: HidWriter<'a, 'a>) {
             match writer.write_serialize(&hid_report).await {
                 Ok(()) => {}
                 Err(e) => warn!("Failed to send report: {:?}", e),
-            };
+            }
         }
     }
 }

@@ -17,10 +17,10 @@ use crate::keymap_borisfaure::{KBLayout, LAYERS};
 #[cfg(feature = "keymap_test")]
 use crate::keymap_test::{KBLayout, LAYERS};
 
-/// Layout refresh rate, in Hz
-const REFRESH_RATE: u16 = 1000;
+/// Layout refresh rate, in ms
+const REFRESH_RATE_MS: u64 = 1;
 /// Number of events in the layout channel
-const NB_EVENTS: usize = 6;
+const NB_EVENTS: usize = 64;
 /// Channel to send `keyberon::layout::event` events to the layout handler
 pub static LAYOUT_CHANNEL: Channel<CriticalSectionRawMutex, Event, NB_EVENTS> = Channel::new();
 
@@ -54,16 +54,23 @@ fn generate_hid_report(layout: &mut KBLayout) -> KeyboardReport {
 /// Handles layout events into the keymap and sends HID reports to the HID handler
 pub async fn layout_handler() {
     let mut layout = Layout::new(&LAYERS);
-    let mut ticker = Ticker::every(Duration::from_hz(REFRESH_RATE.into()));
+    let mut old_report = KeyboardReport::default();
+    let mut ticker = Ticker::every(Duration::from_millis(REFRESH_RATE_MS));
     loop {
         match select(ticker.next(), LAYOUT_CHANNEL.receive()).await {
             Either::First(_) => {
+                // Process all events in the channel if any
+                while let Ok(event) = LAYOUT_CHANNEL.try_receive() {
+                    layout.event(event);
+                }
                 layout.tick();
                 let report = generate_hid_report(&mut layout);
-                HID_CHANNEL.send(report).await;
+                if old_report != report {
+                    HID_CHANNEL.send(report).await;
+                    old_report = report;
+                }
             }
             Either::Second(event) => {
-                defmt::info!("Received Event: {:?}", defmt::Debug2Format(&event));
                 layout.event(event);
             }
         };

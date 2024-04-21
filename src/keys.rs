@@ -12,9 +12,9 @@ const COLS: usize = 5;
 /// Keyboard matrix refresh rate, in Hz
 const REFRESH_RATE: u16 = 1000;
 /// Keyboard matrix debouncing time, in ms
-const DEBOUNCE_TIME: u16 = 5;
+const DEBOUNCE_TIME_MS: u16 = 5;
 /// Keyboard bounce number
-const NB_BOUNCE: u16 = REFRESH_RATE * DEBOUNCE_TIME / 1000;
+const NB_BOUNCE: u16 = REFRESH_RATE * DEBOUNCE_TIME_MS / 1000;
 
 /// Pins for the keyboard matrix
 pub type Matrix<'a> = [[Option<Input<'a>>; COLS]; ROWS];
@@ -56,7 +56,6 @@ fn transform_keypress_coordinates(e: Event) -> Event {
 /// Loop that scans the keyboard matrix
 pub async fn matrix_scanner(matrix: Matrix<'_>) {
     let mut ticker = Ticker::every(Duration::from_hz(REFRESH_RATE.into()));
-
     let mut debouncer = Debouncer::new(matrix_state_new(), matrix_state_new(), NB_BOUNCE);
 
     loop {

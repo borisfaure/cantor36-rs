@@ -9,7 +9,7 @@ use embedded_io_async::{Read, Write};
 use keyberon::layout::Event;
 
 /// Number of events in the channel to the other half of the keyboard
-const NB_EVENTS: usize = 8;
+const NB_EVENTS: usize = 64;
 /// Channel to send `keyberon::layout::event` events to the layout handler
 pub static SIDE_CHANNEL: Channel<CriticalSectionRawMutex, Event, NB_EVENTS> = Channel::new();
 
