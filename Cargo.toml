@@ -13,18 +13,20 @@ left = []
 default = ["left", "keymap_borisfaure"]
 
 [dependencies]
-embassy-stm32 = {    git = "https://github.com/borisfaure/embassy", branch="mut-hid-request-handler", features = ["defmt", "stm32f401cd", "unstable-pac", "memory-x", "time-driver-any", "exti", "chrono"]  }
-embassy-sync = {     git = "https://github.com/borisfaure/embassy", branch="mut-hid-request-handler", features = ["defmt"] }
-embassy-executor = { git = "https://github.com/borisfaure/embassy", branch="mut-hid-request-handler", features = ["task-arena-size-32768", "arch-cortex-m", "executor-thread", "executor-interrupt", "defmt", "integrated-timers"] }
-embassy-time = {     git = "https://github.com/borisfaure/embassy", branch="mut-hid-request-handler", features = ["defmt", "defmt-timestamp-uptime", "tick-hz-32_768"] }
-embassy-usb = {      git = "https://github.com/borisfaure/embassy", branch="mut-hid-request-handler", features = ["defmt" ] }
-embassy-futures = {  git = "https://github.com/borisfaure/embassy", branch="mut-hid-request-handler"}
+embassy-stm32 = {    git = "https://github.com/borisfaure/embassy", branch="all_merged", features = ["defmt", "stm32f401cd", "unstable-pac", "memory-x", "time-driver-any", "exti", "chrono"]  }
+embassy-sync = {     git = "https://github.com/borisfaure/embassy", branch="all_merged", features = ["defmt"] }
+embassy-executor = { git = "https://github.com/borisfaure/embassy", branch="all_merged", features = ["task-arena-size-32768", "arch-cortex-m", "executor-thread", "executor-interrupt", "defmt", "integrated-timers"] }
+embassy-time = {     git = "https://github.com/borisfaure/embassy", branch="all_merged", features = ["defmt", "defmt-timestamp-uptime", "tick-hz-32_768"] }
+embassy-usb = {      git = "https://github.com/borisfaure/embassy", branch="all_merged", features = ["defmt" ] }
+embassy-futures = {  git = "https://github.com/borisfaure/embassy", branch="all_merged"}
+usbd-hid = {         git = "https://github.com/borisfaure/usbd-hid", branch="eq_on_reports" }
 #embassy-stm32 = { git = "https://github.com/embassy-rs/embassy", features = ["defmt", "stm32f401cd", "unstable-pac", "memory-x", "time-driver-any", "exti", "chrono"]  }
 #embassy-sync = { git = "https://github.com/embassy-rs/embassy", features = ["defmt"] }
 #embassy-executor = { git = "https://github.com/embassy-rs/embassy", features = ["task-arena-size-32768", "arch-cortex-m", "executor-thread", "executor-interrupt", "defmt", "integrated-timers"] }
 #embassy-time = { git = "https://github.com/embassy-rs/embassy", features = ["defmt", "defmt-timestamp-uptime", "tick-hz-32_768"] }
 #embassy-usb = { git = "https://github.com/embassy-rs/embassy", features = ["defmt" ] }
 #embassy-futures = { git = "https://github.com/emabssy-rs/embassy"}
+#usbd-hid = "0.7.0"
 
 keyberon = { git = "https://github.com/borisfaure/keyberon", branch = "shifted_seq" }
 
@@ -41,7 +43,6 @@ heapless = { version = "0.8", default-features = false }
 nb = "1.0"
 embedded-storage = "0.3.1"
 micromath = "2.0.0"
-usbd-hid = "0.7.0"
 static_cell = "2"
 chrono = { version = "^0.4", default-features = false}
 
