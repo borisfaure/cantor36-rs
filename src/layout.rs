@@ -24,6 +24,24 @@ const NB_EVENTS: usize = 64;
 /// Channel to send `keyberon::layout::event` events to the layout handler
 pub static LAYOUT_CHANNEL: Channel<CriticalSectionRawMutex, Event, NB_EVENTS> = Channel::new();
 
+#[derive(Debug)]
+/// Custom events for the layout, mostly mouse events
+pub enum CustomEvent {
+    MouseNorth,
+    MouseNorthEast,
+    MouseEast,
+    MouseSouthEast,
+    MouseSouth,
+    MouseSouthWest,
+    MouseWest,
+    MouseNorthWest,
+    MouseLeftClick,
+    MouseRightClick,
+    MouseMiddleClick,
+    MouseScrollUp,
+    MouseScrollDown,
+}
+
 /// Set a report as an error based on keycode `kc`
 fn keyboard_report_set_error(report: &mut KeyboardReport, kc: keyberon::key_code::KeyCode) {
     report.modifier = 0;
@@ -63,7 +81,7 @@ pub async fn layout_handler() {
                 while let Ok(event) = LAYOUT_CHANNEL.try_receive() {
                     layout.event(event);
                 }
-                layout.tick();
+                let _custom_event = layout.tick();
                 let report = generate_hid_report(&mut layout);
                 if old_report != report {
                     HID_CHANNEL.send(report).await;

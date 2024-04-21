@@ -1,4 +1,4 @@
-use core::convert::Infallible;
+use crate::layout::CustomEvent;
 use core::fmt::Debug;
 use keyberon::action::{
     d, k, l, m, Action, HoldTapAction, HoldTapConfig,
@@ -8,7 +8,7 @@ use keyberon::key_code::KeyCode::*;
 use keyberon::layout::Layout;
 
 /// Keyboard Layout type to mask the number of layers
-pub type KBLayout = Layout<10, 4, 9, Infallible>;
+pub type KBLayout = Layout<10, 4, 9, CustomEvent>;
 
 /// Timeout to consider a key as held
 const TIMEOUT: u16 = 200;
@@ -48,88 +48,88 @@ const L_CAPS: usize = 7;
 const L_QWERTY: usize = 8;
 
 /// Win when held, or W
-const HT_W_W: Action = ht!(k(LGui), k(W));
+const HT_W_W: Action<CustomEvent> = ht!(k(LGui), k(W));
 /// Win when held, or O
-const HT_W_O: Action = ht!(k(RGui), k(O));
+const HT_W_O: Action<CustomEvent> = ht!(k(RGui), k(O));
 /// Win when held, or Y
-const HT_W_Y: Action = ht!(k(RGui), k(Y));
+const HT_W_Y: Action<CustomEvent> = ht!(k(RGui), k(Y));
 /// Left Control when held, or A
-const HT_C_A: Action = ht!(k(LCtrl), k(A));
+const HT_C_A: Action<CustomEvent> = ht!(k(LCtrl), k(A));
 /// Right Control when held, or SemiColon
-const HT_C_SC: Action = ht!(k(RCtrl), k(SColon));
+const HT_C_SC: Action<CustomEvent> = ht!(k(RCtrl), k(SColon));
 /// Right Control when held, or O
-const HT_C_O: Action = ht!(k(RCtrl), k(O));
+const HT_C_O: Action<CustomEvent> = ht!(k(RCtrl), k(O));
 /// Left Shift when held, or Z
-const HT_S_Z: Action = ht!(k(LShift), k(Z));
+const HT_S_Z: Action<CustomEvent> = ht!(k(LShift), k(Z));
 /// Right Shift when held, or Slash
-const HT_S_SL: Action = ht!(k(RShift), k(Slash));
+const HT_S_SL: Action<CustomEvent> = ht!(k(RShift), k(Slash));
 /// Left Alt when held, or X
-const HT_A_X: Action = ht!(k(LAlt), k(X));
+const HT_A_X: Action<CustomEvent> = ht!(k(LAlt), k(X));
 /// Left Alt when held, or .
-const HT_A_DOT: Action = ht!(k(LAlt), k(Dot));
+const HT_A_DOT: Action<CustomEvent> = ht!(k(LAlt), k(Dot));
 
 /// Layer 1 (lower) when held, or Space
-const HT_1_SP: Action = ht!(l(L_LOWER), k(Space));
+const HT_1_SP: Action<CustomEvent> = ht!(l(L_LOWER), k(Space));
 
 /// Layer 2 (raise) when held, or BackSpace
-const HT_2_BS: Action = ht!(l(L_RAISE), k(BSpace));
+const HT_2_BS: Action<CustomEvent> = ht!(l(L_RAISE), k(BSpace));
 
 /// Layer 3 (numbers/Fx) when held, or B
-const HT_3_B: Action = ht!(l(L_NUM), k(B));
+const HT_3_B: Action<CustomEvent> = ht!(l(L_NUM), k(B));
 /// Layer 3 (numbers/Fx) when held, or N
-const HT_3_N: Action = ht!(l(L_NUM), k(N));
+const HT_3_N: Action<CustomEvent> = ht!(l(L_NUM), k(N));
 /// Layer 3 (numbers/Fx) when held, or V
-const HT_3_V: Action = ht!(l(L_NUM), k(V));
+const HT_3_V: Action<CustomEvent> = ht!(l(L_NUM), k(V));
 /// Layer 3 (numbers/Fx) when held, or J
-const HT_3_J: Action = ht!(l(L_NUM), k(J));
+const HT_3_J: Action<CustomEvent> = ht!(l(L_NUM), k(J));
 /// Layer 3 (numbers/Fx) when held, or RAlt
-const HT_3_RA: Action = ht!(l(L_NUM), k(RAlt));
+const HT_3_RA: Action<CustomEvent> = ht!(l(L_NUM), k(RAlt));
 /// Layer 3 (numbers/Fx) when held, or Escape
-const HT_3_ESC: Action = ht!(l(L_NUM), k(Escape));
+const HT_3_ESC: Action<CustomEvent> = ht!(l(L_NUM), k(Escape));
 
 /// Layer 4 (misc) when held, or T
-const HT_4_T: Action = ht!(l(L_MISC), k(T));
+const HT_4_T: Action<CustomEvent> = ht!(l(L_MISC), k(T));
 /// Layer 4 (misc) when held, or Y
-const HT_4_Y: Action = ht!(l(L_MISC), k(Y));
+const HT_4_Y: Action<CustomEvent> = ht!(l(L_MISC), k(Y));
 /// Layer 4 (misc) when held, or B
-const HT_4_B: Action = ht!(l(L_MISC), k(B));
+const HT_4_B: Action<CustomEvent> = ht!(l(L_MISC), k(B));
 /// Layer 4 (misc) when held, or K
-const HT_4_K: Action = ht!(l(L_MISC), k(K));
+const HT_4_K: Action<CustomEvent> = ht!(l(L_MISC), k(K));
 
 /// Layer 5 (tmux) when held, or F
-const HT_5_F: Action = ht!(l(L_TMUX), k(F));
+const HT_5_F: Action<CustomEvent> = ht!(l(L_TMUX), k(F));
 /// Layer 5 (tmux) when held, or T
-const HT_5_T: Action = ht!(l(L_TMUX), k(T));
+const HT_5_T: Action<CustomEvent> = ht!(l(L_TMUX), k(T));
 
 /// Shift-Insert
-const S_INS: Action = m(&[LShift, Insert].as_slice());
+const S_INS: Action<CustomEvent> = m(&[LShift, Insert].as_slice());
 
 /// Caps Mode
-const CAPS: Action = k(CapsLock);
+const CAPS: Action<CustomEvent> = k(CapsLock);
 /// Caps from LED change
-const VCAPS: Action = d(L_CAPS);
+const VCAPS: Action<CustomEvent> = d(L_CAPS);
 
 /// Unset Caps Mode
-const UNCAPS: Action = k(CapsLock);
+const UNCAPS: Action<CustomEvent> = k(CapsLock);
 /// Unset Caps from LED change
-const VUNCAPS: Action = d(L_COLEMAN);
+const VUNCAPS: Action<CustomEvent> = d(L_COLEMAN);
 
 /// Num Lock Mode
-const NUMLCK: Action = k(NumLock);
+const NUMLCK: Action<CustomEvent> = k(NumLock);
 /// Num Lock from LED change
-const VNUM: Action = d(L_NUM);
+const VNUM: Action<CustomEvent> = d(L_NUM);
 
 /// Unset Num Lock Mode
-const UNNUM: Action = k(NumLock);
+const UNNUM: Action<CustomEvent> = k(NumLock);
 /// Unset Num Lock from LED change
-const VUNNUM: Action = d(L_COLEMAN);
+const VUNNUM: Action<CustomEvent> = d(L_COLEMAN);
 
 /// Change default layer to GAMING
-const GAME: Action = d(L_GAMING);
+const GAME: Action<CustomEvent> = d(L_GAMING);
 /// Change default layer to QWERTY
-const QWERTY: Action = d(L_QWERTY);
+const QWERTY: Action<CustomEvent> = d(L_QWERTY);
 /// Change default layer to COLEMAN_DH
-const COLEMAN_DH: Action = d(L_COLEMAN);
+const COLEMAN_DH: Action<CustomEvent> = d(L_COLEMAN);
 
 /// A shortcut to create a `Action::Sequence`, useful to
 /// create compact layout.
@@ -142,7 +142,7 @@ where
 }
 
 /// à or À
-const A_GRV: Action = seq(&[
+const A_GRV: Action<CustomEvent> = seq(&[
     Filter(&[LShift, RShift].as_slice()),
     Tap(RAlt),
     Tap(Grave),
@@ -151,7 +151,7 @@ const A_GRV: Action = seq(&[
 ]
 .as_slice());
 /// è or È
-const E_GRV: Action = seq(&[
+const E_GRV: Action<CustomEvent> = seq(&[
     Filter(&[LShift, RShift].as_slice()),
     Tap(RAlt),
     Tap(Grave),
@@ -160,7 +160,7 @@ const E_GRV: Action = seq(&[
 ]
 .as_slice());
 /// ù or Ù
-const U_GRV: Action = seq(&[
+const U_GRV: Action<CustomEvent> = seq(&[
     Filter(&[LShift, RShift].as_slice()),
     Tap(RAlt),
     Tap(Grave),
@@ -169,7 +169,7 @@ const U_GRV: Action = seq(&[
 ]
 .as_slice());
 /// é or É
-const E_ACU: Action = seq(&[
+const E_ACU: Action<CustomEvent> = seq(&[
     Filter(&[LShift, RShift].as_slice()),
     Tap(RAlt),
     Tap(Quote),
@@ -178,7 +178,7 @@ const E_ACU: Action = seq(&[
 ]
 .as_slice());
 /// ê or Ê
-const E_CIR: Action = seq(&[
+const E_CIR: Action<CustomEvent> = seq(&[
     Filter(&[LShift, RShift].as_slice()),
     Tap(RAlt),
     Press(LShift),
@@ -189,7 +189,7 @@ const E_CIR: Action = seq(&[
 ]
 .as_slice());
 /// î or Î
-const I_CIR: Action = seq(&[
+const I_CIR: Action<CustomEvent> = seq(&[
     Filter(&[LShift, RShift].as_slice()),
     Tap(RAlt),
     Press(LShift),
@@ -200,7 +200,7 @@ const I_CIR: Action = seq(&[
 ]
 .as_slice());
 /// ô or Ô
-const O_CIR: Action = seq(&[
+const O_CIR: Action<CustomEvent> = seq(&[
     Filter(&[LShift, RShift].as_slice()),
     Tap(RAlt),
     Press(LShift),
@@ -211,7 +211,7 @@ const O_CIR: Action = seq(&[
 ]
 .as_slice());
 /// ç or Ç
-const C_CED: Action = seq(&[
+const C_CED: Action<CustomEvent> = seq(&[
     Filter(&[LShift, RShift].as_slice()),
     Tap(RAlt),
     Tap(Comma),
@@ -220,7 +220,7 @@ const C_CED: Action = seq(&[
 ]
 .as_slice());
 /// œ or Œ
-const OE: Action = seq(&[
+const OE: Action<CustomEvent> = seq(&[
     Filter(&[LShift, RShift].as_slice()),
     Tap(RAlt),
     Restore,
@@ -229,7 +229,7 @@ const OE: Action = seq(&[
 ]
 .as_slice());
 /// €
-const EURO: Action = seq(&[
+const EURO: Action<CustomEvent> = seq(&[
     Filter(&[LShift, RShift].as_slice()),
     Tap(RAlt),
     Tap(Equal),
@@ -240,7 +240,7 @@ const EURO: Action = seq(&[
 ]
 .as_slice());
 /// …
-const DOTS: Action = seq(&[
+const DOTS: Action<CustomEvent> = seq(&[
     Filter(&[LShift, RShift].as_slice()),
     Tap(RAlt),
     Tap(Dot),
@@ -250,15 +250,15 @@ const DOTS: Action = seq(&[
 .as_slice());
 
 /// Tmux: new window
-const T_NEW: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(C)].as_slice());
+const T_NEW: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(C)].as_slice());
 /// Tmux: previous window
-const T_PRV: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(P)].as_slice());
+const T_PRV: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(P)].as_slice());
 /// Tmux: next window
-const T_NXT: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(N)].as_slice());
+const T_NXT: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(N)].as_slice());
 /// Tmux: last window
-const T_LST: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(L)].as_slice());
+const T_LST: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(L)].as_slice());
 /// Tmux: command
-const T_CMD: Action = seq(&[
+const T_CMD: Action<CustomEvent> = seq(&[
     Press(LCtrl),
     Tap(A),
     Release(LCtrl),
@@ -268,39 +268,44 @@ const T_CMD: Action = seq(&[
 ]
 .as_slice());
 /// Tmux: copy
-const T_CPY: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(LBracket)].as_slice());
+const T_CPY: Action<CustomEvent> =
+    seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(LBracket)].as_slice());
 /// Tmux: paste
-const T_PST: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(RBracket)].as_slice());
+const T_PST: Action<CustomEvent> =
+    seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(RBracket)].as_slice());
 /// Tmux: scroll
-const T_SCR: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(PgUp)].as_slice());
+const T_SCR: Action<CustomEvent> =
+    seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(PgUp)].as_slice());
 /// Tmux: move
-const T_MOV: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Dot)].as_slice());
+const T_MOV: Action<CustomEvent> =
+    seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Dot)].as_slice());
 /// Tmux: rename
-const T_RNM: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Comma)].as_slice());
+const T_RNM: Action<CustomEvent> =
+    seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Comma)].as_slice());
 /// Tmux: go to window 1
-const T_1: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb1)].as_slice());
+const T_1: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb1)].as_slice());
 /// Tmux: go to window 2
-const T_2: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb2)].as_slice());
+const T_2: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb2)].as_slice());
 /// Tmux: go to window 3
-const T_3: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb3)].as_slice());
+const T_3: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb3)].as_slice());
 /// Tmux: go to window 4
-const T_4: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb4)].as_slice());
+const T_4: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb4)].as_slice());
 /// Tmux: go to window 5
-const T_5: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb5)].as_slice());
+const T_5: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb5)].as_slice());
 /// Tmux: go to window 6
-const T_6: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb6)].as_slice());
+const T_6: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb6)].as_slice());
 /// Tmux: go to window 7
-const T_7: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb7)].as_slice());
+const T_7: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb7)].as_slice());
 /// Tmux: go to window 8
-const T_8: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb8)].as_slice());
+const T_8: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb8)].as_slice());
 /// Tmux: go to window 9
-const T_9: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb9)].as_slice());
+const T_9: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb9)].as_slice());
 /// Tmux: go to window 0
-const T_0: Action = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb0)].as_slice());
+const T_0: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb0)].as_slice());
 
 #[rustfmt::skip]
 /// Layout
-pub static LAYERS: keyberon::layout::Layers<10, 4, 9, Infallible> = keyberon::layout::layout! {
+pub static LAYERS: keyberon::layout::Layers<10, 4, 9, CustomEvent> = keyberon::layout::layout! {
    { /* 0: Coleman-DH */
 [  Q         {HT_W_W}   F          P         {HT_4_B}    {HT_4_K}   L         U        {HT_W_Y}     ;        ],
 [ {HT_C_A}    R         S         {HT_5_T}    G           M         N         E         I          {HT_C_O}  ],

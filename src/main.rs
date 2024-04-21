@@ -28,6 +28,8 @@ mod hid;
 mod keys;
 /// Layout events processing
 mod layout;
+/// Act as a mouse
+mod mouse;
 /// Handling the other half of the keyboard
 mod side;
 
