@@ -104,13 +104,13 @@ async fn main(spawner: Spawner) {
     builder.handler(&mut device_handler);
 
     // Create classes on the builder.
-    let hid_config = embassy_usb::class::hid::Config {
+    let hidkb_config = embassy_usb::class::hid::Config {
         report_descriptor: KeyboardReport::desc(),
         request_handler: None,
         poll_ms: 60,
         max_packet_size: 8,
     };
-    let hid = HidReaderWriter::<_, 64, 64>::new(&mut builder, &mut state, hid_config);
+    let hidkb = HidReaderWriter::<_, 64, 64>::new(&mut builder, &mut state, hidkb_config);
 
     // Build the builder.
     let mut usb = builder.build();
@@ -119,7 +119,7 @@ async fn main(spawner: Spawner) {
     let usb_fut = usb.run();
 
     let mut request_handler = hid::HidRequestHandler::new(&spawner);
-    let (hid_reader, hid_writer) = hid.split();
+    let (hid_reader, hid_writer) = hidkb.split();
     let hid_reader_fut = async {
         hid_reader.run(false, &mut request_handler).await;
     };
