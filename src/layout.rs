@@ -1,9 +1,10 @@
-use crate::hid::HID_CHANNEL;
+use crate::hid::{HID_KB_CHANNEL, HID_MOUSE_CHANNEL};
+use crate::mouse::MouseHandler;
 use embassy_futures::select::{select, Either};
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, channel::Channel};
 use embassy_time::{Duration, Ticker};
 use keyberon::layout::{Event, Layout};
-use usbd_hid::descriptor::KeyboardReport;
+use usbd_hid::descriptor::{KeyboardReport, MouseReport};
 
 /// Basic layout for the keyboard
 #[cfg(feature = "keymap_basic")]
@@ -27,18 +28,31 @@ pub static LAYOUT_CHANNEL: Channel<CriticalSectionRawMutex, Event, NB_EVENTS> = 
 #[derive(Debug)]
 /// Custom events for the layout, mostly mouse events
 pub enum CustomEvent {
+    /// Mouse move up
     MouseNorth,
+    /// Mouse move up and right
     MouseNorthEast,
+    /// Mouse move right
     MouseEast,
+    /// Mouse move down and right
     MouseSouthEast,
+    /// Mouse move down
     MouseSouth,
+    /// Mouse move down and left
     MouseSouthWest,
+    /// Mouse move left
     MouseWest,
+    /// Mouse move up and left
     MouseNorthWest,
+    /// Mouse left click
     MouseLeftClick,
+    /// Mouse right click
     MouseRightClick,
+    /// Mouse middle click
     MouseMiddleClick,
+    /// Mouse scroll up
     MouseScrollUp,
+    /// Mouse scroll down
     MouseScrollDown,
 }
 
@@ -50,7 +64,7 @@ fn keyboard_report_set_error(report: &mut KeyboardReport, kc: keyberon::key_code
 }
 
 /// Generate a HID report from the current layout
-fn generate_hid_report(layout: &mut KBLayout) -> KeyboardReport {
+fn generate_hid_kb_report(layout: &mut KBLayout) -> KeyboardReport {
     let mut report = KeyboardReport::default();
     for kc in layout.keycodes() {
         use keyberon::key_code::KeyCode::*;
@@ -72,7 +86,9 @@ fn generate_hid_report(layout: &mut KBLayout) -> KeyboardReport {
 /// Handles layout events into the keymap and sends HID reports to the HID handler
 pub async fn layout_handler() {
     let mut layout = Layout::new(&LAYERS);
-    let mut old_report = KeyboardReport::default();
+    let mut mouse = MouseHandler::new();
+    let mut old_kb_report = KeyboardReport::default();
+    let mut old_mouse_report = MouseReport::default();
     let mut ticker = Ticker::every(Duration::from_millis(REFRESH_RATE_MS));
     loop {
         match select(ticker.next(), LAYOUT_CHANNEL.receive()).await {
@@ -81,11 +97,17 @@ pub async fn layout_handler() {
                 while let Ok(event) = LAYOUT_CHANNEL.try_receive() {
                     layout.event(event);
                 }
-                let _custom_event = layout.tick();
-                let report = generate_hid_report(&mut layout);
-                if old_report != report {
-                    HID_CHANNEL.send(report).await;
-                    old_report = report;
+                let custom_event = layout.tick();
+                let kb_report = generate_hid_kb_report(&mut layout);
+                if kb_report != old_kb_report {
+                    HID_KB_CHANNEL.send(kb_report).await;
+                    old_kb_report = kb_report;
+                }
+                mouse.new_event(custom_event);
+                let mouse_report = mouse.generate_hid_report();
+                if mouse_report != old_mouse_report {
+                    HID_MOUSE_CHANNEL.send(mouse_report).await;
+                    old_mouse_report = mouse_report;
                 }
             }
             Either::Second(event) => {

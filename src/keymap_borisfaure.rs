@@ -1,4 +1,5 @@
 use crate::layout::CustomEvent;
+use crate::layout::CustomEvent::*;
 use core::fmt::Debug;
 use keyberon::action::{
     d, k, l, m, Action, HoldTapAction, HoldTapConfig,
@@ -303,6 +304,33 @@ const T_9: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap
 /// Tmux: go to window 0
 const T_0: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb0)].as_slice());
 
+/// Mouse move up
+const MN: Action<CustomEvent> = Action::Custom(MouseNorth);
+/// Mouse move up and right
+const MNE: Action<CustomEvent> = Action::Custom(MouseNorthEast);
+/// Mouse move right
+const ME: Action<CustomEvent> = Action::Custom(MouseEast);
+/// Mouse move down and right
+const MSE: Action<CustomEvent> = Action::Custom(MouseSouthEast);
+/// Mouse move down
+const MS: Action<CustomEvent> = Action::Custom(MouseSouth);
+/// Mouse move down and left
+const MSW: Action<CustomEvent> = Action::Custom(MouseSouthWest);
+/// Mouse move left
+const MW: Action<CustomEvent> = Action::Custom(MouseWest);
+/// Mouse move up and left
+const MNW: Action<CustomEvent> = Action::Custom(MouseNorthWest);
+/// Mouse left click
+const MLC: Action<CustomEvent> = Action::Custom(MouseLeftClick);
+/// Mouse right click
+const MRC: Action<CustomEvent> = Action::Custom(MouseRightClick);
+/// Mouse middle click
+const MMC: Action<CustomEvent> = Action::Custom(MouseMiddleClick);
+/// Mouse scroll up
+const MSU: Action<CustomEvent> = Action::Custom(MouseScrollUp);
+/// Mouse scroll down
+const MSD: Action<CustomEvent> = Action::Custom(MouseScrollDown);
+
 #[rustfmt::skip]
 /// Layout
 pub static LAYERS: keyberon::layout::Layers<10, 4, 9, CustomEvent> = keyberon::layout::layout! {
@@ -326,11 +354,11 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, CustomEvent> = keyberon::l
         [ 0  1  2   3         -         *    F5         F6   F7   F8   ],
         [ ,  7  8   9         +         +    F9         F10  F11  F12  ],
         [ t {VUNNUM} {UNNUM}  {HT_1_SP} Tab     Enter  {HT_2_BS}    n    t    t   ],
-    } { /* 4: MISC TODO: mouse */
-        [ Pause  {GAME}             {COLEMAN_DH}    {QWERTY}       n      n  n  n  n  n ],
-        [ n      VolDown            Mute            VolUp          n      n  n  n  n  n ],
-        [ n      MediaPreviousSong  MediaPlayPause  MediaNextSong  n      n  n  n  n  n ],
-        [ t      t                  n               n              n      n  n  n  t  t ],
+    } { /* 4: MISC and MOUSE */
+        [ Pause  {GAME}             {COLEMAN_DH}    {QWERTY}       n      {MSU} {MNW}  {MN}  {MNE}  n ],
+        [ n      VolDown            Mute            VolUp          n        n   {MW}   {MLC} {ME}   n ],
+        [ n      MediaPreviousSong  MediaPlayPause  MediaNextSong  n      {MSD} {MSW}  {MS}  {MSE}  n ],
+        [ t      t                  n               n              n      {MLC} {MMC}  {MRC}   t    t ],
     } { /* 5: TMUX */
         [ {T_6}   {T_7} {T_8}   {T_9}   {T_0}      {T_1}   {T_2} {T_3}   {T_4}   {T_5}   ],
         [ {T_LST}  n     n       n       n         {T_PRV}  n    {T_SCR} {T_NXT} {T_CMD} ],

@@ -11,11 +11,11 @@ use embassy_executor::Spawner;
 use embassy_stm32::bind_interrupts;
 use embassy_stm32::gpio::{Input, Pull};
 use embassy_stm32::usart;
-use embassy_usb::class::hid::{HidReaderWriter, State};
+use embassy_usb::class::hid::{HidReaderWriter, HidWriter, State};
 use embassy_usb::Builder;
-use usbd_hid::descriptor::{KeyboardReport, SerializedDescriptor};
+use usbd_hid::descriptor::{KeyboardReport, MouseReport, SerializedDescriptor};
 
-use crate::hid::hid_writer_handler;
+use crate::hid::{hid_kb_writer_handler, hid_mouse_writer_handler};
 use crate::side::{SERIAL_BUF_SIZE, USART_BAUDRATE};
 use futures::future;
 use panic_probe as _;
@@ -90,7 +90,8 @@ async fn main(spawner: Spawner) {
 
     let mut device_handler = side::DeviceHandler::new();
 
-    let mut state = State::new();
+    let mut state_kb = State::new();
+    let mut state_mouse = State::new();
 
     let mut builder = Builder::new(
         driver,
@@ -110,7 +111,15 @@ async fn main(spawner: Spawner) {
         poll_ms: 60,
         max_packet_size: 8,
     };
-    let hidkb = HidReaderWriter::<_, 64, 64>::new(&mut builder, &mut state, hidkb_config);
+    let hidkb = HidReaderWriter::<_, 64, 64>::new(&mut builder, &mut state_kb, hidkb_config);
+
+    let hidm_config = embassy_usb::class::hid::Config {
+        report_descriptor: MouseReport::desc(),
+        request_handler: None,
+        poll_ms: 60,
+        max_packet_size: 4,
+    };
+    let hidm = HidWriter::<_, 64>::new(&mut builder, &mut state_mouse, hidm_config);
 
     // Build the builder.
     let mut usb = builder.build();
@@ -119,11 +128,12 @@ async fn main(spawner: Spawner) {
     let usb_fut = usb.run();
 
     let mut request_handler = hid::HidRequestHandler::new(&spawner);
-    let (hid_reader, hid_writer) = hidkb.split();
-    let hid_reader_fut = async {
-        hid_reader.run(false, &mut request_handler).await;
+    let (hid_kb_reader, hid_kb_writer) = hidkb.split();
+    let hid_kb_reader_fut = async {
+        hid_kb_reader.run(false, &mut request_handler).await;
     };
-    let hid_writer_fut = hid_writer_handler(hid_writer);
+    let hid_kb_writer_fut = hid_kb_writer_handler(hid_kb_writer);
+    let hid_mouse_writer_fut = hid_mouse_writer_handler(hidm);
 
     let matrix = [
         [
@@ -182,7 +192,7 @@ async fn main(spawner: Spawner) {
 
     future::join4(
         future::join3(usb_fut, usart_rx_fut, usart_tx_fut),
-        future::join(hid_reader_fut, hid_writer_fut),
+        future::join3(hid_kb_reader_fut, hid_kb_writer_fut, hid_mouse_writer_fut),
         matrix_fut,
         layout_fut,
     )

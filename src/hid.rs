@@ -7,12 +7,14 @@ use embassy_stm32::usb::Driver;
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, channel::Channel};
 use embassy_usb::class::hid::{ReportId, RequestHandler};
 use embassy_usb::control::OutResponse;
-use usbd_hid::descriptor::KeyboardReport;
+use usbd_hid::descriptor::{KeyboardReport, MouseReport};
 
 /// Only one report is sent at a time
 const NB_REPORTS: usize = 64;
 /// Channel to send HID reports to the HID writer
-pub static HID_CHANNEL: Channel<CriticalSectionRawMutex, KeyboardReport, NB_REPORTS> =
+pub static HID_KB_CHANNEL: Channel<CriticalSectionRawMutex, KeyboardReport, NB_REPORTS> =
+    Channel::new();
+pub static HID_MOUSE_CHANNEL: Channel<CriticalSectionRawMutex, MouseReport, NB_REPORTS> =
     Channel::new();
 
 /// HID writer type
@@ -103,10 +105,23 @@ impl HidRequestHandler<'_> {
     }
 }
 
-/// Loop to read HID reports from the HID channel and send them to the HID writer
-pub async fn hid_writer_handler<'a>(mut writer: HidWriter<'a, 'a>) {
+/// Loop to read HID KeyboardReport reports from the channel and send them over USB
+pub async fn hid_kb_writer_handler<'a>(mut writer: HidWriter<'a, 'a>) {
     loop {
-        let hid_report = HID_CHANNEL.receive().await;
+        let hid_report = HID_KB_CHANNEL.receive().await;
+        if is_host() {
+            match writer.write_serialize(&hid_report).await {
+                Ok(()) => {}
+                Err(e) => warn!("Failed to send report: {:?}", e),
+            }
+        }
+    }
+}
+
+/// Loop to read HID MouseReport reports from the channel and send them over USB
+pub async fn hid_mouse_writer_handler<'a>(mut writer: HidWriter<'a, 'a>) {
+    loop {
+        let hid_report = HID_KB_CHANNEL.receive().await;
         if is_host() {
             match writer.write_serialize(&hid_report).await {
                 Ok(()) => {}
