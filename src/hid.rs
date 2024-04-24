@@ -121,7 +121,7 @@ pub async fn hid_kb_writer_handler<'a>(mut writer: HidWriter<'a, 'a>) {
 /// Loop to read HID MouseReport reports from the channel and send them over USB
 pub async fn hid_mouse_writer_handler<'a>(mut writer: HidWriter<'a, 'a>) {
     loop {
-        let hid_report = HID_KB_CHANNEL.receive().await;
+        let hid_report = HID_MOUSE_CHANNEL.receive().await;
         if is_host() {
             match writer.write_serialize(&hid_report).await {
                 Ok(()) => {}
