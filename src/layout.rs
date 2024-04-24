@@ -29,21 +29,13 @@ pub static LAYOUT_CHANNEL: Channel<CriticalSectionRawMutex, Event, NB_EVENTS> = 
 /// Custom events for the layout, mostly mouse events
 pub enum CustomEvent {
     /// Mouse move up
-    MouseNorth,
-    /// Mouse move up and right
-    MouseNorthEast,
-    /// Mouse move right
-    MouseEast,
-    /// Mouse move down and right
-    MouseSouthEast,
+    MouseUp,
+    /// Mouse move Right
+    MouseRight,
     /// Mouse move down
-    MouseSouth,
-    /// Mouse move down and left
-    MouseSouthWest,
+    MouseDown,
     /// Mouse move left
-    MouseWest,
-    /// Mouse move up and left
-    MouseNorthWest,
+    MouseLeft,
     /// Mouse left click
     MouseLeftClick,
     /// Mouse right click
@@ -103,9 +95,11 @@ pub async fn layout_handler() {
                     HID_KB_CHANNEL.send(kb_report).await;
                     old_kb_report = kb_report;
                 }
-                mouse.new_event(custom_event);
+                mouse.process_event(custom_event);
+                mouse.tick();
                 let mouse_report = mouse.generate_hid_report();
                 if mouse_report != old_mouse_report {
+                    defmt::info!("Mouse Report: {:?}", defmt::Debug2Format(&mouse_report));
                     HID_MOUSE_CHANNEL.send(mouse_report).await;
                     old_mouse_report = mouse_report;
                 }

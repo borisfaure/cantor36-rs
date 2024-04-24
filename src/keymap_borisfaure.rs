@@ -305,21 +305,13 @@ const T_9: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap
 const T_0: Action<CustomEvent> = seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Kb0)].as_slice());
 
 /// Mouse move up
-const MN: Action<CustomEvent> = Action::Custom(MouseNorth);
-/// Mouse move up and right
-const MNE: Action<CustomEvent> = Action::Custom(MouseNorthEast);
-/// Mouse move right
-const ME: Action<CustomEvent> = Action::Custom(MouseEast);
-/// Mouse move down and right
-const MSE: Action<CustomEvent> = Action::Custom(MouseSouthEast);
+const MU: Action<CustomEvent> = Action::Custom(MouseUp);
 /// Mouse move down
-const MS: Action<CustomEvent> = Action::Custom(MouseSouth);
-/// Mouse move down and left
-const MSW: Action<CustomEvent> = Action::Custom(MouseSouthWest);
+const MD: Action<CustomEvent> = Action::Custom(MouseDown);
 /// Mouse move left
-const MW: Action<CustomEvent> = Action::Custom(MouseWest);
-/// Mouse move up and left
-const MNW: Action<CustomEvent> = Action::Custom(MouseNorthWest);
+const ML: Action<CustomEvent> = Action::Custom(MouseLeft);
+/// Mouse move right
+const MR: Action<CustomEvent> = Action::Custom(MouseRight);
 /// Mouse left click
 const MLC: Action<CustomEvent> = Action::Custom(MouseLeftClick);
 /// Mouse right click
@@ -354,10 +346,10 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, CustomEvent> = keyberon::l
         [ 0  1  2   3         -         *    F5         F6   F7   F8   ],
         [ ,  7  8   9         +         +    F9         F10  F11  F12  ],
         [ t {VUNNUM} {UNNUM}  {HT_1_SP} Tab     Enter  {HT_2_BS}    n    t    t   ],
-    } { /* 4: MISC and MOUSE */
-        [ Pause  {GAME}             {COLEMAN_DH}    {QWERTY}       n      {MSU} {MNW}  {MN}  {MNE}  n ],
-        [ n      VolDown            Mute            VolUp          n        n   {MW}   {MLC} {ME}   n ],
-        [ n      MediaPreviousSong  MediaPlayPause  MediaNextSong  n      {MSD} {MSW}  {MS}  {MSE}  n ],
+    } { /* 4: MISC and Mouse */
+        [ Pause  {GAME}             {COLEMAN_DH}    {QWERTY}       n      {MSU}  n      n     n     n ],
+        [ n      VolDown            Mute            VolUp          n      {ML}  {MD}   {MU}  {MR}   n ],
+        [ n      MediaPreviousSong  MediaPlayPause  MediaNextSong  n      {MSD}  n      n     n     n ],
         [ t      t                  n               n              n      {MLC} {MMC}  {MRC}   t    t ],
     } { /* 5: TMUX */
         [ {T_6}   {T_7} {T_8}   {T_9}   {T_0}      {T_1}   {T_2} {T_3}   {T_4}   {T_5}   ],
