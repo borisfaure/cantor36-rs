@@ -2,6 +2,15 @@ use crate::layout::CustomEvent;
 use keyberon::layout::CustomEvent as KbCustomEvent;
 use usbd_hid::descriptor::MouseReport;
 
+/// Maximum rate for the mouse
+const MAX_RATE: i8 = 127;
+/// Minimum rate for the mouse
+const MIN_RATE: i8 = 1;
+/// Update Frequency, in Hz
+const UPDATE_FREQUENCY: u32 = 16;
+/// Number of ticks between rate changes
+const RATE_CHANGE_TICKS: u32 = 1000 / UPDATE_FREQUENCY;
+
 /// Mouse handler
 #[derive(Debug, Default)]
 pub struct MouseHandler {
@@ -26,15 +35,23 @@ pub struct MouseHandler {
     /// Wheel down
     pub wheel_down: bool,
 
-    /// How fast the mouse moves
-    pub rate: i8,
+    /// How fast the mouse moves horizontally
+    pub rate_horizontal: i8,
+    /// How fast the mouse moves vertically
+    pub rate_vertical: i8,
+
+    /// Number of ticks
+    n: u32,
+    /// Had change
+    has_changed: bool,
 }
 
 impl MouseHandler {
     /// Create a new mouse handler
     pub fn new() -> Self {
         MouseHandler {
-            rate: 1,
+            rate_horizontal: MIN_RATE,
+            rate_vertical: MIN_RATE,
             ..Default::default()
         }
     }
@@ -45,11 +62,7 @@ impl MouseHandler {
             KbCustomEvent::Release(event) => Some((event, false)),
             _ => None,
         } {
-            defmt::info!(
-                "Mouse event: {:?} (is_pressed:{:?})",
-                defmt::Debug2Format(&event),
-                is_pressed
-            );
+            self.has_changed = true;
             match event {
                 CustomEvent::MouseUp => self.up = is_pressed,
                 CustomEvent::MouseDown => self.down = is_pressed,
@@ -64,21 +77,56 @@ impl MouseHandler {
         }
     }
 
-    /// Compute the state of the mouse
-    pub fn tick(&mut self) {}
+    /// Check if the mouse is active
+    fn is_active(&self) -> bool {
+        self.up
+            || self.down
+            || self.left
+            || self.right
+            || self.left_click
+            || self.right_click
+            || self.middle_click
+            || self.wheel_up
+            || self.wheel_down
+    }
+
+    /// Compute the state of the mouse. Called every 1ms
+    pub fn tick(&mut self) -> Option<MouseReport> {
+        self.n += 1;
+        if self.n < RATE_CHANGE_TICKS {
+            return None;
+        }
+        self.n = 0;
+        if self.up || self.down {
+            self.rate_vertical = self.rate_vertical.checked_mul(2).unwrap_or(MAX_RATE);
+        } else {
+            self.rate_vertical = MIN_RATE;
+        }
+        if self.left || self.right {
+            self.rate_horizontal = self.rate_horizontal.checked_mul(2).unwrap_or(MAX_RATE);
+        } else {
+            self.rate_horizontal = MIN_RATE;
+        }
+        if self.has_changed || self.is_active() {
+            self.has_changed = false;
+            Some(self.generate_hid_report())
+        } else {
+            None
+        }
+    }
 
     /// Generate a HID report for the mouse
-    pub fn generate_hid_report(&mut self) -> MouseReport {
+    fn generate_hid_report(&mut self) -> MouseReport {
         let mut report = MouseReport::default();
         if self.up {
-            report.y = self.rate;
+            report.y = self.rate_vertical;
         } else if self.down {
-            report.y = -self.rate;
+            report.y = -self.rate_vertical;
         }
         if self.left {
-            report.x = -self.rate;
+            report.x = -self.rate_horizontal;
         } else if self.right {
-            report.x = self.rate;
+            report.x = self.rate_horizontal;
         }
         if self.left_click {
             report.buttons |= 1;

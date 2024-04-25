@@ -4,7 +4,7 @@ use embassy_futures::select::{select, Either};
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, channel::Channel};
 use embassy_time::{Duration, Ticker};
 use keyberon::layout::{Event, Layout};
-use usbd_hid::descriptor::{KeyboardReport, MouseReport};
+use usbd_hid::descriptor::KeyboardReport;
 
 /// Basic layout for the keyboard
 #[cfg(feature = "keymap_basic")]
@@ -80,7 +80,6 @@ pub async fn layout_handler() {
     let mut layout = Layout::new(&LAYERS);
     let mut mouse = MouseHandler::new();
     let mut old_kb_report = KeyboardReport::default();
-    let mut old_mouse_report = MouseReport::default();
     let mut ticker = Ticker::every(Duration::from_millis(REFRESH_RATE_MS));
     loop {
         match select(ticker.next(), LAYOUT_CHANNEL.receive()).await {
@@ -96,12 +95,9 @@ pub async fn layout_handler() {
                     old_kb_report = kb_report;
                 }
                 mouse.process_event(custom_event);
-                mouse.tick();
-                let mouse_report = mouse.generate_hid_report();
-                if mouse_report != old_mouse_report {
+                if let Some(mouse_report) = mouse.tick() {
                     defmt::info!("Mouse Report: {:?}", defmt::Debug2Format(&mouse_report));
                     HID_MOUSE_CHANNEL.send(mouse_report).await;
-                    old_mouse_report = mouse_report;
                 }
             }
             Either::Second(event) => {
