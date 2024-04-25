@@ -11,9 +11,10 @@ use usbd_hid::descriptor::{KeyboardReport, MouseReport};
 
 /// Only one report is sent at a time
 const NB_REPORTS: usize = 64;
-/// Channel to send HID reports to the HID writer
+/// Channel to send HID keyboard reports to the HID writer
 pub static HID_KB_CHANNEL: Channel<CriticalSectionRawMutex, KeyboardReport, NB_REPORTS> =
     Channel::new();
+/// Channel to send HID mouse reports to the HID writer
 pub static HID_MOUSE_CHANNEL: Channel<CriticalSectionRawMutex, MouseReport, NB_REPORTS> =
     Channel::new();
 
