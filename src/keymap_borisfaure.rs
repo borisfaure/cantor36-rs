@@ -130,7 +130,14 @@ const GAME: Action<CustomEvent> = d(L_GAMING);
 /// Change default layer to QWERTY
 const QWERTY: Action<CustomEvent> = d(L_QWERTY);
 /// Change default layer to COLEMAN_DH
-const COLEMAN_DH: Action<CustomEvent> = d(L_COLEMAN);
+const COLEMAN: Action<CustomEvent> = d(L_COLEMAN);
+
+/// Media Previous
+const MPREV: Action<CustomEvent> = k(MediaPreviousSong);
+/// Media Play/Pause
+const MPLAY: Action<CustomEvent> = k(MediaPlayPause);
+/// Media Next
+const MNEXT: Action<CustomEvent> = k(MediaNextSong);
 
 /// A shortcut to create a `Action::Sequence`, useful to
 /// create compact layout.
@@ -347,10 +354,10 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, CustomEvent> = keyberon::l
         [ ,  7  8   9         +         +    F9         F10  F11  F12  ],
         [ t {VUNNUM} {UNNUM}  {HT_1_SP} Tab     Enter  {HT_2_BS}    n    t    t   ],
     } { /* 4: MISC and Mouse */
-        [ Pause  {GAME}             {COLEMAN_DH}    {QWERTY}       n      {MSU}  n      n     n     n ],
-        [ n      VolDown            Mute            VolUp          n      {ML}  {MD}   {MU}  {MR}   n ],
-        [ n      MediaPreviousSong  MediaPlayPause  MediaNextSong  n      {MSD}  n      n     n     n ],
-        [ t      t                  n               n              n      {MLC} {MMC}  {MRC}   t    t ],
+        [ Pause  {GAME}   {COLEMAN}  {QWERTY}  n      {MSU}  n      n     n     n   ],
+        [ n      VolDown  Mute       VolUp     n      n     {ML}  {MD}   {MU}  {MR} ],
+        [ n      {MPREV}  {MPLAY}    {MNEXT}   n      {MSD}  n      n     n     n   ],
+        [ t      t          n         n        n      {MLC} {MMC}  {MRC}  t     t   ],
     } { /* 5: TMUX */
         [ {T_6}   {T_7} {T_8}   {T_9}   {T_0}      {T_1}   {T_2} {T_3}   {T_4}   {T_5}   ],
         [ {T_LST}  n     n       n       n         {T_PRV}  n    {T_SCR} {T_NXT} {T_CMD} ],
