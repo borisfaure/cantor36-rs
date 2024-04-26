@@ -1,4 +1,4 @@
-use core::convert::Infallible;
+use crate::layout::CustomEvent;
 use core::fmt::Debug;
 use keyberon::action::{
     Action,
@@ -8,7 +8,7 @@ use keyberon::key_code::KeyCode::*;
 use keyberon::layout::Layout;
 
 /// Keyboard Layout type to mask the number of layers
-pub type KBLayout = Layout<10, 4, 2, Infallible>;
+pub type KBLayout = Layout<10, 4, 2, CustomEvent>;
 
 /// A shortcut to create a `Action::Sequence`, useful to
 /// create compact layout.
@@ -21,13 +21,13 @@ where
 }
 
 /// write `qwe`
-const QQ: Action = seq(&[Tap(Q), Tap(W), Tap(E)].as_slice());
+const QQ: Action<CustomEvent> = seq(&[Tap(Q), Tap(W), Tap(E)].as_slice());
 /// write `aze`
-const AA: Action = seq(&[Tap(A), Tap(Z), Tap(E)].as_slice());
+const AA: Action<CustomEvent> = seq(&[Tap(A), Tap(Z), Tap(E)].as_slice());
 
 #[rustfmt::skip]
 /// Layout
-pub static LAYERS: keyberon::layout::Layers<10, 4, 2, Infallible> = keyberon::layout::layout! {
+pub static LAYERS: keyberon::layout::Layers<10, 4, 2, CustomEvent> = keyberon::layout::layout! {
     { // 0: Base Layer
         [ {QQ}  W   E   R  T      Y  U  I  O  P ],
         [  A   S   D   F  G      H  J  K  L  ; ],

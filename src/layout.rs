@@ -28,6 +28,7 @@ pub static LAYOUT_CHANNEL: Channel<CriticalSectionRawMutex, Event, NB_EVENTS> = 
 #[derive(Debug)]
 /// Custom events for the layout, mostly mouse events
 #[allow(clippy::enum_variant_names)]
+#[allow(dead_code)]
 pub enum CustomEvent {
     /// Mouse move up
     MouseUp,
