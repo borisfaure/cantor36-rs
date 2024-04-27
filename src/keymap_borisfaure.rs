@@ -335,7 +335,7 @@ const MSD: Action<CustomEvent> = Action::Custom(MouseScrollDown);
 pub static LAYERS: keyberon::layout::Layers<10, 4, 9, CustomEvent> = keyberon::layout::layout! {
    { /* 0: Coleman-DH */
 [  Q         {HT_W_W}   F          P         {HT_4_B}    {HT_4_K}   L         U        {HT_W_Y}     ;        ],
-[ {HT_C_A}    R         S         {HT_5_T}    G           M         N         E         I          {HT_C_O}  ],
+[ {HT_C_A}    R         S         {HT_5_T}    G           M        {HT_3_N}   E         I          {HT_C_O}  ],
 [ {HT_S_Z}   {HT_A_X}   C          D         {HT_3_V}    {HT_3_J}   H         ,        {HT_A_DOT}  {HT_S_SL} ],
 [ {VCAPS}    {VNUM}    {HT_3_ESC} {HT_1_SP}   Tab         Enter    {HT_2_BS} {HT_3_RA}  n           n        ],
     } { /* 1: LOWER */
