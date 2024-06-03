@@ -132,13 +132,6 @@ const QWERTY: Action<CustomEvent> = d(L_QWERTY);
 /// Change default layer to COLEMAN_DH
 const COLEMAN: Action<CustomEvent> = d(L_COLEMAN);
 
-/// Media Previous
-const MPREV: Action<CustomEvent> = k(MediaPreviousSong);
-/// Media Play/Pause
-const MPLAY: Action<CustomEvent> = k(MediaPlayPause);
-/// Media Next
-const MNEXT: Action<CustomEvent> = k(MediaNextSong);
-
 /// A shortcut to create a `Action::Sequence`, useful to
 /// create compact layout.
 const fn seq<T, K>(events: &'static &'static [SequenceEvent<K>]) -> Action<T, K>
@@ -281,9 +274,12 @@ const T_CPY: Action<CustomEvent> =
 /// Tmux: paste
 const T_PST: Action<CustomEvent> =
     seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(RBracket)].as_slice());
-/// Tmux: scroll
-const T_SCR: Action<CustomEvent> =
+/// Tmux: scroll up
+const T_UP: Action<CustomEvent> =
     seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(PgUp)].as_slice());
+/// Tmux: scroll down
+const T_DWN: Action<CustomEvent> =
+    seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(PgDown)].as_slice());
 /// Tmux: move
 const T_MOV: Action<CustomEvent> =
     seq(&[Press(LCtrl), Tap(A), Release(LCtrl), Tap(Dot)].as_slice());
@@ -354,13 +350,13 @@ pub static LAYERS: keyberon::layout::Layers<10, 4, 9, CustomEvent> = keyberon::l
         [ ,  7  8   9         +         +    F9         F10  F11  F12  ],
         [ t {VUNNUM} {UNNUM}  {HT_1_SP} Tab     Enter  {HT_2_BS}    n    t    t   ],
     } { /* 4: MISC and Mouse */
-        [ Pause  {GAME}   {COLEMAN}  {QWERTY}  n      {MSU}  n      n     n     n   ],
-        [ n      VolDown  Mute       VolUp     n      n     {ML}  {MD}   {MU}  {MR} ],
-        [ n      {MPREV}  {MPLAY}    {MNEXT}   n      {MSD}  n      n     n     n   ],
-        [ t      t        {MLC}      {MMC}   {MRC}    {MLC} {MMC}  {MRC}  t     t   ],
+        [ Pause  {GAME}           {COLEMAN}    {QWERTY}      n      {MSU}  n      n     n     n   ],
+        [ n      VolDown          Mute         VolUp         n       n    {ML}  {MD}   {MU}  {MR} ],
+        [ n MediaPreviousSong  MediaPlayPause MediaNextSong  n      {MSD}  n      n     n     n   ],
+        [ t      t                {MLC}        {MMC}      {MRC}     {MLC} {MMC}  {MRC}  t     t   ],
     } { /* 5: TMUX */
         [ {T_6}   {T_7} {T_8}   {T_9}   {T_0}      {T_1}   {T_2}  {T_3}   {T_4}   {T_5}   ],
-        [ {T_LST}  n     n       n       n          n     {T_PRV} {T_SCR}  n      {T_NXT} ],
+        [ {T_LST}  n     n       n       n          n     {T_PRV} {T_UP}  {T_DWN} {T_NXT} ],
         [  n       n    {T_NEW} {T_CPY} {T_PST}     n       n     {T_RNM} {T_MOV} {T_PST} ],
         [  t       t     n       n       n         {T_CMD}  n      n       t       t      ],
     } { /* 6: Gaming */
