@@ -57,7 +57,7 @@ pub fn usb_config() -> embassy_usb::Config<'static> {
     let mut config = embassy_usb::Config::new(VID, PID);
     config.manufacturer = Some(MANUFACTURER);
     config.product = Some(PRODUCT);
-    config.serial_number = Some("CARGO_PKG_VERSION");
+    config.serial_number = Some(env!("CARGO_PKG_VERSION"));
     config.max_power = 100;
     config.max_packet_size_0 = 64;
 
