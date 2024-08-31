@@ -1,7 +1,6 @@
 use crate::layout::LAYOUT_CHANNEL;
 use core::sync::atomic::{AtomicBool, Ordering};
 use defmt::*;
-use embassy_stm32::peripherals::USART1;
 use embassy_stm32::usart::{BufferedUartRx, BufferedUartTx};
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, channel::Channel};
 use embassy_usb::Handler;
@@ -38,7 +37,7 @@ fn serialize(e: Event) -> [u8; SERIALIZED_SIZE] {
 }
 
 /// Receive key events from the other half of the keyboard
-pub async fn usart_rx(mut buf_usart: BufferedUartRx<'_, USART1>) {
+pub async fn usart_rx(mut buf_usart: BufferedUartRx<'_>) {
     loop {
         let mut buf: [u8; SERIALIZED_SIZE] = [0; SERIALIZED_SIZE];
         buf_usart.read_exact(&mut buf).await.unwrap();
@@ -54,7 +53,7 @@ pub async fn usart_rx(mut buf_usart: BufferedUartRx<'_, USART1>) {
 }
 
 /// Send key events to the other half of the keyboard
-pub async fn usart_tx(mut buf_usart: BufferedUartTx<'_, USART1>) {
+pub async fn usart_tx(mut buf_usart: BufferedUartTx<'_>) {
     loop {
         let event = SIDE_CHANNEL.receive().await;
         let buf = serialize(event);

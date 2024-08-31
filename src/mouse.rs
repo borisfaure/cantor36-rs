@@ -117,7 +117,13 @@ impl MouseHandler {
 
     /// Generate a HID report for the mouse
     fn generate_hid_report(&mut self) -> MouseReport {
-        let mut report = MouseReport::default();
+        let mut report = MouseReport {
+            x: 0,
+            y: 0,
+            buttons: 0,
+            wheel: 0,
+            pan: 0,
+        };
         if self.up {
             report.y = self.rate_vertical;
         } else if self.down {
