@@ -3,7 +3,7 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
-//! Firmware for the [Cantor31 keyboard](https://github.com/borisfaure/cantor36)
+//! Firmware for the [Cantor36 keyboard](https://github.com/borisfaure/cantor36)
 
 use defmt::*;
 use defmt_rtt as _;
