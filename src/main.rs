@@ -175,11 +175,11 @@ async fn main(spawner: Spawner) {
     usart_config.baudrate = USART_BAUDRATE;
     let buf_usart = usart::BufferedUart::new(
         p.USART1,
-        Irqs,
         p.PB7,
         p.PB6,
         &mut tx_buf,
         &mut rx_buf,
+        Irqs,
         usart_config,
     )
     .unwrap();
