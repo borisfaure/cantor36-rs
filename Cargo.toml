@@ -17,7 +17,7 @@ embassy-stm32 = { version = "0.3", features = ["defmt", "stm32f401cd", "unstable
 embassy-sync = { version = "0.7", features = ["defmt"] }
 embassy-executor = { version = "0.8", features = ["arch-cortex-m", "executor-thread", "executor-interrupt", "defmt"] }
 embassy-time = { version = "0.4", features = ["defmt", "defmt-timestamp-uptime", "tick-hz-32_768"] }
-embassy-usb = { version = "0.4", features = ["defmt" ] }
+embassy-usb = { version = "0.5", features = ["defmt" ] }
 embassy-futures = "0.1"
 usbd-hid = "0.8.2"
 
