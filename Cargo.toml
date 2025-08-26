@@ -23,14 +23,14 @@ usbd-hid = "0.8.2"
 
 keyberon = { git = "https://github.com/borisfaure/keyberon", branch = "shifted_seq" }
 
-defmt = "0.3"
-defmt-rtt = "0.4"
+defmt = "1.0"
+defmt-rtt = "1.0"
+panic-probe = { version = "1.0", features = ["print-defmt"] }
 
 cortex-m = { version = "0.7.6", features = ["inline-asm", "critical-section-single-core"] }
 cortex-m-rt = "0.7.0"
 embedded-io = "0.6"
 embedded-io-async = "0.6"
-panic-probe = { version = "0.3", features = ["print-defmt"] }
 futures = { version = "0.3.17", default-features = false, features = ["async-await"] }
 heapless = { version = "0.9", default-features = false }
 nb = "1.0"
