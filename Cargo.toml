@@ -13,7 +13,7 @@ left = []
 default = ["left", "keymap_borisfaure"]
 
 [dependencies]
-embassy-stm32 = { version = "0.3", features = ["defmt", "stm32f401cd", "unstable-pac", "memory-x", "time-driver-any", "exti", "chrono"]  }
+embassy-stm32 = { version = "0.4", features = ["defmt", "stm32f401cd", "unstable-pac", "memory-x", "time-driver-any", "exti", "chrono"]  }
 embassy-sync = { version = "0.7", features = ["defmt"] }
 embassy-executor = { version = "0.9", features = ["arch-cortex-m", "executor-thread", "executor-interrupt", "defmt"] }
 embassy-time = { version = "0.5", features = ["defmt", "defmt-timestamp-uptime", "tick-hz-32_768"] }
