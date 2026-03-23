@@ -11,7 +11,7 @@ use embassy_executor::Spawner;
 use embassy_stm32::bind_interrupts;
 use embassy_stm32::gpio::{Input, Pull};
 use embassy_stm32::usart;
-use embassy_usb::class::hid::{HidReaderWriter, HidWriter, State};
+use embassy_usb::class::hid::{HidBootProtocol, HidReaderWriter, HidSubclass, HidWriter, State};
 use embassy_usb::Builder;
 use usbd_hid::descriptor::{KeyboardReport, MouseReport, SerializedDescriptor};
 
@@ -110,6 +110,8 @@ async fn main(spawner: Spawner) {
         request_handler: None,
         poll_ms: 60,
         max_packet_size: 8,
+        hid_subclass: HidSubclass::Boot,
+        hid_boot_protocol: HidBootProtocol::Keyboard,
     };
     let hidkb = HidReaderWriter::<_, 64, 64>::new(&mut builder, &mut state_kb, hidkb_config);
 
@@ -118,6 +120,8 @@ async fn main(spawner: Spawner) {
         request_handler: None,
         poll_ms: 60,
         max_packet_size: 4,
+        hid_subclass: HidSubclass::Boot,
+        hid_boot_protocol: HidBootProtocol::Mouse,
     };
     let hidm = HidWriter::<_, 64>::new(&mut builder, &mut state_mouse, hidm_config);
 
